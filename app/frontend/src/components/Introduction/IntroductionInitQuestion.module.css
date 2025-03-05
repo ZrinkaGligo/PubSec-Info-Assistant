@@ -1,0 +1,41 @@
+.tableStyle {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-bottom: 20px;
+  }
+  
+  .columnStyle {
+    display: inline;
+    vertical-align: bottom;
+    width: 100%;
+    font-family: "Roboto", sans-serif;
+    font-size: 30px;
+    line-height: 1.5;
+    font-weight: 550;
+  }
+  
+  .image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 40%; 
+    max-height: 80px;
+  }
+  
+  .textColumn {
+    display: inline;
+    vertical-align: bottom;
+    padding-left: 16px;
+    width: 100%;
+    font-family: "Roboto", sans-serif;
+    font-size: 30px;
+    line-height: 1.5;
+  }
+
+  
+  .rowStyle {
+    display: inline;
+    align-items: center; /* Align image and text in the center */
+    gap: 5px; /* Space between image and text */
+  }

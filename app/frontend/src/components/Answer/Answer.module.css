@@ -56,14 +56,31 @@
 }
 
 .answerLogoWork {
-    font-size: 22px;
-    color: #1B4AEF;
+    font-size: 18px;
+    color: #349ae6;
     white-space: break-spaces;
     word-break: break-word;
     display: flex;
     align-items: center;
 }
+.finlyIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
+.answerIntroduction {
+    font-size: 22px;
+    font-family: "Roboto", sans-serif;
+    color: #0167CC;
+    white-space: break-spaces;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+}
 .answerLogoCompare {
     font-size: 22px;
     color: #ce7b2e;
@@ -91,7 +108,7 @@
 }
 
 .answerText {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 22px;
     padding-top: 16px;
@@ -99,7 +116,7 @@
 }
 
 .answerTextUngrounded {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 400;
     line-height: 22px;
     padding-top: 16px;

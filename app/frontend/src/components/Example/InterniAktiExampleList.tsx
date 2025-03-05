@@ -21,12 +21,11 @@ const EXAMPLES_OdlukeOdbora: ExampleModel[] = [
     { text: "Odluka odbora 2?", value: "Koji su postupci zaposlenika defirani u slučaju primjećivanja pranja novca (AML)?" },
     { text: "Odluka odbora 3?", value: "Koji su glavni interni i regulatorni zahtjevi koje banka mora ispuniti prilikom odobravanja donacija?" }
 ];
+
 const EXAMPLES: ExampleModel[] = [
-    { text: "Molio bih primjere revizija odluka županijskih sudova", value: "Molio bih primjere revizija odluka županijskih sudova" },
-    { text: "Kako se određuje drugi nadležni sud u Hrvatskoj?", value: "Kako se određuje drugi nadležni sud u Hrvatskoj?" },
-    { text: "Kako se odluke Europskog suda primjenjuju u Hrvatskoj?", value: "Kako se odluke Europskog suda primjenjuju u Hrvatskoj?" }
-    
-    
+    { text: "Koje su ključne obaveze banke u zaštiti osobnih podataka klijenata prema GDPR-u?", value: "Koje su ključne obaveze banke u zaštiti osobnih podataka klijenata prema GDPR-u" },
+    { text: "Koji su postupci zaposlenika defirani u slučaju primjećivanja pranja novca (AML)?", value: "Koji su postupci zaposlenika defirani u slučaju primjećivanja pranja novca (AML)?" },
+    { text: "Koji su glavni interni i regulatorni zahtjevi koje banka mora ispuniti prilikom odobravanja donacija?", value: "Koji su glavni interni i regulatorni zahtjevi koje banka mora ispuniti prilikom odobravanja donacija?" }
 ];
 
 const GetExamples = (topic: string) => {
@@ -45,8 +44,7 @@ interface Props {
     topic: string;
 }
 
-
-export const ExampleList = ({ onExampleClicked, topic }: Props) => {
+const InterniAktiExampleList = ({ onExampleClicked, topic }: Props) => {
     return (
         <ul className={styles.examplesNavList}>
             {GetExamples(topic).map((x, i) => (
@@ -57,3 +55,5 @@ export const ExampleList = ({ onExampleClicked, topic }: Props) => {
         </ul>
     );
 };
+
+export {InterniAktiExampleList};

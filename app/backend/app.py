@@ -15,11 +15,14 @@ from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, Form
 from fastapi.responses import RedirectResponse, StreamingResponse
 import openai
+from approaches.introduction_approcach import IntroductionApproach
+from approaches.credit_approval_approach import CreditApprovalApproach
+from approaches.odluke_odbora_approach import OdlukeOdboraApproach
 from approaches.comparewebwithwork import CompareWebWithWork
 from approaches.compareworkwithweb import CompareWorkWithWeb
 from approaches.chatreadretrieveread import ChatReadRetrieveReadApproach
 from approaches.documentsummary import DocumentSummary
-from approaches.decisionproposal import DecisionProposal
+from approaches.decision_proposal import DecisionProposal
 from approaches.chatwebretrieveread import ChatWebRetrieveRead
 from approaches.gpt_direct_approach import GPTDirectApproach
 from approaches.approach import Approaches
@@ -263,6 +266,71 @@ chat_approaches = {
                                     token_provider,
                                     str_to_bool.get(ENV["USE_SEMANTIC_RERANKER"])
                                 ),
+    Approaches.Introduction: IntroductionApproach(
+                                    search_client,
+                                    ENV["AZURE_OPENAI_ENDPOINT"],
+                                    ENV["AZURE_OPENAI_CHATGPT_DEPLOYMENT"],
+                                    ENV["KB_FIELDS_SOURCEFILE"],
+                                    ENV["KB_FIELDS_CONTENT"],
+                                    ENV["KB_FIELDS_PAGENUMBER"],
+                                    ENV["KB_FIELDS_CHUNKFILE"],
+                                    ENV["AZURE_BLOB_STORAGE_CONTAINER"],
+                                    blob_client,
+                                    ENV["QUERY_TERM_LANGUAGE"],
+                                    MODEL_NAME,
+                                    MODEL_VERSION,
+                                    ENV["TARGET_EMBEDDINGS_MODEL"],
+                                    ENV["ENRICHMENT_APPSERVICE_URL"],
+                                    ENV["TARGET_TRANSLATION_LANGUAGE"],
+                                    ENV["AZURE_AI_ENDPOINT"],
+                                    ENV["AZURE_AI_LOCATION"],
+                                    token_provider,
+                                    str_to_bool.get(ENV["USE_SEMANTIC_RERANKER"])
+                                ),
+    
+    Approaches.CreditApproval: CreditApprovalApproach(
+                                    search_client,
+                                    ENV["AZURE_OPENAI_ENDPOINT"],
+                                    ENV["AZURE_OPENAI_CHATGPT_DEPLOYMENT"],
+                                    ENV["KB_FIELDS_SOURCEFILE"],
+                                    ENV["KB_FIELDS_CONTENT"],
+                                    ENV["KB_FIELDS_PAGENUMBER"],
+                                    ENV["KB_FIELDS_CHUNKFILE"],
+                                    ENV["AZURE_BLOB_STORAGE_CONTAINER"],
+                                    blob_client,
+                                    ENV["QUERY_TERM_LANGUAGE"],
+                                    MODEL_NAME,
+                                    MODEL_VERSION,
+                                    ENV["TARGET_EMBEDDINGS_MODEL"],
+                                    ENV["ENRICHMENT_APPSERVICE_URL"],
+                                    ENV["TARGET_TRANSLATION_LANGUAGE"],
+                                    ENV["AZURE_AI_ENDPOINT"],
+                                    ENV["AZURE_AI_LOCATION"],
+                                    token_provider,
+                                    str_to_bool.get(ENV["USE_SEMANTIC_RERANKER"])
+                                ),
+    
+    Approaches.OdlukeOdbora: OdlukeOdboraApproach(
+                                    search_client,
+                                    ENV["AZURE_OPENAI_ENDPOINT"],
+                                    ENV["AZURE_OPENAI_CHATGPT_DEPLOYMENT"],
+                                    ENV["KB_FIELDS_SOURCEFILE"],
+                                    ENV["KB_FIELDS_CONTENT"],
+                                    ENV["KB_FIELDS_PAGENUMBER"],
+                                    ENV["KB_FIELDS_CHUNKFILE"],
+                                    ENV["AZURE_BLOB_STORAGE_CONTAINER"],
+                                    blob_client,
+                                    ENV["QUERY_TERM_LANGUAGE"],
+                                    MODEL_NAME,
+                                    MODEL_VERSION,
+                                    ENV["TARGET_EMBEDDINGS_MODEL"],
+                                    ENV["ENRICHMENT_APPSERVICE_URL"],
+                                    ENV["TARGET_TRANSLATION_LANGUAGE"],
+                                    ENV["AZURE_AI_ENDPOINT"],
+                                    ENV["AZURE_AI_LOCATION"],
+                                    token_provider,
+                                    str_to_bool.get(ENV["USE_SEMANTIC_RERANKER"])
+                                ),
     Approaches.ChatWebRetrieveRead: ChatWebRetrieveRead(
                                     MODEL_NAME,
                                     ENV["AZURE_OPENAI_CHATGPT_DEPLOYMENT"],
@@ -372,12 +440,15 @@ async def chat(request: Request):
         if (Approaches(int(approach)) == Approaches.CompareWorkWithWeb or
             Approaches(int(approach)) == Approaches.DocumentSummary or
             Approaches(int(approach)) == Approaches.DecisionProposal or
+            Approaches(int(approach)) == Approaches.OdlukeOdbora or
+            Approaches(int(approach)) == Approaches.CreditApproval or
             Approaches(int(approach)) == Approaches.CompareWebWithWork):
             r = impl.run(json_body.get("history", []),
                          json_body.get("overrides", {}),
                          json_body.get("citation_lookup", {}),
                          json_body.get("thought_chain", {}))
         else:
+            # Approaches.Introduction - treba li njega negdi?
             r = impl.run(json_body.get("history", []),
                          json_body.get("overrides", {}),
                          {},

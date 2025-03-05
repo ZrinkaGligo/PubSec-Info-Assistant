@@ -136,6 +136,19 @@
     margin-bottom: 20px;
 }
 
+.introductionChatStyle
+{
+    position: fixed;
+    bottom: 50px;
+    flex: 0 0 100px;
+    padding-top: 12px;
+    padding-bottom: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    width: 100%;
+    max-width: 1028px;
+    background: #f2f2f2;
+}
 .chatInput {
     position: fixed;
     bottom: 50px;

@@ -24,6 +24,7 @@ import CharacterStreamer from "../CharacterStreamer/CharacterStreamer";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeRaw from "rehype-raw";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
     answer: ChatResponse;
@@ -91,7 +92,6 @@ export const Answer = ({
         return lines.slice(0, index);
     };
 
-
     const onDecisionProposalClick = async (answerHtml: string) => {
     }
 
@@ -138,8 +138,6 @@ export const Answer = ({
 
         return textRuns;
     }
-  
-    
 
     const getParagraphs = (lines:string[]) =>{
             
@@ -222,13 +220,32 @@ export const Answer = ({
 
 
     };
+    const navigate = useNavigate();
 
+    const onSudskeOdlukeClicked = (korisnikInfo: string) => {
+        console.log(korisnikInfo);
+        navigate("/Chat", { state: { isFirstRedirect: true } });
+
+    }
+
+    const onInterniAkti = (korisnikInfo: string) => {
+        console.log(korisnikInfo)
+    }
+
+    const onOdulukeOdbora = (korisnikInfo: string) => {
+        console.log(korisnikInfo)
+    }
+
+    const isFinal = (answerHtml: string) => {
+        const final = answerHtml.includes("#@#");
+        return final;       
+    }
 
     return (
-        <Stack className={`${(answer.approach == Approaches.ReadRetrieveRead || answer.approach == Approaches.DocumentSummary || answer.approach == Approaches.DecisionProposal) ? styles.answerContainerWork :
+        <Stack className={`${(answer.approach == Approaches.ReadRetrieveRead || answer.approach == Approaches.DocumentSummary || answer.approach == Approaches.DecisionProposal || answer.approach == Approaches.OdlukeOdbora || answer.approach == Approaches.CreditApproval) ? styles.answerContainerWork :
             answer.approach == Approaches.ChatWebRetrieveRead ? styles.answerContainerWeb :
                 answer.approach == Approaches.CompareWorkWithWeb || answer.approach == Approaches.CompareWebWithWork ? styles.answerContainerCompare :
-                    answer.approach == Approaches.GPTDirect ? styles.answerContainerUngrounded :
+                    (answer.approach == Approaches.GPTDirect || answer.approach == Approaches.Introduction) ? styles.answerContainerUngrounded :
                         styles.answerContainer} ${isSelected && styles.selected}`} verticalAlign="space-between">
 
             {/* Proces razmišljanja */}
@@ -236,7 +253,7 @@ export const Answer = ({
                 <Stack horizontal horizontalAlign="space-between">
                     <AnswerIcon approach={answer.approach} />
                     <div>
-                        {answer.approach != Approaches.GPTDirect &&
+                        {answer.approach != Approaches.GPTDirect && answer.approach != Approaches.Introduction &&
                             <IconButton
                                 style={{ color: "black" }}
                                 iconProps={{ iconName: "Lightbulb" }}
@@ -262,12 +279,12 @@ export const Answer = ({
 
             {/* Vaši poslovni i privatni podaci su zaštićeni */}
             <Stack.Item grow>
-                {(answer.approach != Approaches.GPTDirect) &&
+                {(answer.approach != Approaches.GPTDirect && answer.approach != Approaches.Introduction) &&
                     <div className={styles.protectedBanner}>
                         <ShieldCheckmark20Regular></ShieldCheckmark20Regular>Vaši poslovni i privatni podaci su zaštićeni
                     </div>
                 }
-                {answer.answer && <div className={answer.approach == Approaches.GPTDirect ? styles.answerTextUngrounded : styles.answerText}><ReactMarkdown children={parsedAnswer.answerHtml} rehypePlugins={[rehypeRaw, rehypeSanitize]}></ReactMarkdown></div>}
+                {answer.answer && <div className={(answer.approach == Approaches.GPTDirect || answer.approach == Approaches.Introduction)? styles.answerTextUngrounded : styles.answerText}><ReactMarkdown children={parsedAnswer.answerHtml} rehypePlugins={[rehypeRaw, rehypeSanitize]}></ReactMarkdown></div>}
                 {!answer.answer && <CharacterStreamer
                     classNames={answer.approach == Approaches.GPTDirect ? styles.answerTextUngrounded : styles.answerText}
                     approach={answer.approach}
@@ -297,7 +314,16 @@ export const Answer = ({
                 </Stack.Item>
 
             )}
-
+            {(parsedAnswer.approach == Approaches.Introduction && !!parsedAnswer.answerHtml.length && isFinal(parsedAnswer.answerHtml)) && (
+                <Stack.Item>
+                    <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
+                        <div className={styles.downloadFile} onClick={() => onInterniAkti && onInterniAkti(parsedAnswer.answerHtml)}> Interni akti</div>
+                        <div className={styles.downloadFile} onClick={() => onOdulukeOdbora && onOdulukeOdbora(parsedAnswer.answerHtml)}> Odluke odbora</div>
+                        <div className={styles.downloadFile} onClick={() => onSudskeOdlukeClicked && onSudskeOdlukeClicked("#@# Ime:Zrinka, Tvrtka:Asee Solutions, Pozicija:Developer, Email:zrinka.b@gmail.com. #@#")}> Sudske odluke</div>
+                        
+                    </Stack>
+                </Stack.Item>
+            )}
             {(parsedAnswer.approach == Approaches.DocumentSummary && !!parsedAnswer.answerHtml.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
@@ -421,12 +447,12 @@ export const Answer = ({
                     </Stack>
                 </Stack.Item>
             )}
-            <Stack.Item>
+            {/* <Stack.Item>
                 <div className={styles.raiwarning}>AI-generirani sadržaj može biti netočan</div>
-            </Stack.Item>
-            {answer.answer && <Stack.Item align="center">
+            </Stack.Item> */}
+            {/* {answer.answer && <Stack.Item align="center">
                 <RAIPanel approach={answer.approach} chatMode={chatMode} onAdjustClick={onAdjustClick} onRegenerateClick={onRegenerateClick} onWebSearchClicked={onWebSearchClicked} onWebCompareClicked={onWebCompareClicked} onRagCompareClicked={onRagCompareClicked} onRagSearchClicked={onRagSearchClicked} />
-            </Stack.Item>}
+            </Stack.Item>} */}
         </Stack>
     );
 };

@@ -65,6 +65,15 @@ const CharacterStreamer = ({ eventSource, nonEventString, onStreamingComplete, c
             else if (approach === Approaches.DecisionProposal) {
               response.thought_chain["work_response"] = response.answer
             }
+            else if (approach === Approaches.Introduction) {
+              response.thought_chain["ungrounded_response"] = response.answer
+            }
+            else if (approach === Approaches.CreditApproval) {
+              response.thought_chain["work_response"] = response.answer
+            }
+            else if (approach === Approaches.OdlukeOdbora) {
+              response.thought_chain["work_response"] = response.answer
+            }
             else if (approach === Approaches.GPTDirect) {
               response.thought_chain["ungrounded_response"] = response.answer
             }

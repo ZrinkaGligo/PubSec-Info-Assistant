@@ -15,6 +15,8 @@ import { chatApi, Approaches, ChatResponse, ChatRequest, ChatTurn, ChatMode, get
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
+import { OdlukeOdboraExampleList } from "../../components/Example/OdlukeOdboraExampleList";
+import { InterniAktiExampleList } from "../../components/Example/InterniAktiExampleList.tsx";
 import { UserChatMessage } from "../../components/UserChatMessage";
 import { AnalysisPanel, AnalysisPanelTabs } from "../../components/AnalysisPanel";
 import { SettingsButton } from "../../components/SettingsButton";
@@ -30,8 +32,6 @@ import React from "react";
 import * as mammoth from "mammoth";
 import { LegalAssistantEntry } from "../../components/LegalAssistant/LegalAssistantEntry";
 import {LegalAssistant} from "../../components/LegalAssistant/LegalAssistant";
-
-
 
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
@@ -520,6 +520,13 @@ const Chat = () => {
                                             </div>
                                         <h1 className={styles.chatEmptyStateTitle}>Pitajte informacije o odlukama VSRH</h1>
                                     </div>
+                                : activeChatMode == ChatMode.WorkPlusWeb && activeApproach == Approaches.Introduction ?
+                                     <div>
+                                         <div className={styles.introductionChatStyle}> 
+                                             <BuildingMultipleFilled fontSize={"80px"} primaryFill={"rgba(27, 74, 239, 1)"} aria-hidden="true" aria-label="Chat with your Work and Web Data logo" /><AddFilled fontSize={"50px"} primaryFill={"rgba(0, 0, 0, 0.7)"} aria-hidden="true" aria-label=""/><GlobeFilled fontSize={"80px"} primaryFill={"rgba(24, 141, 69, 1)"} aria-hidden="true" aria-label="" />
+                                         </div>
+                                         <h1 className={styles.chatEmptyStateTitle}>Chat with your work and web data</h1>
+                                     </div>
                                 : activeChatMode == ChatMode.WorkPlusWeb ?
                                     <div>
                                         <div className={styles.chatEmptyStateHeader}> 
@@ -527,6 +534,7 @@ const Chat = () => {
                                         </div>
                                         <h1 className={styles.chatEmptyStateTitle}>Chat with your work and web data</h1>
                                     </div>
+                                
                                 : //else Ungrounded
                                     <div>
                                         <div className={styles.chatEmptyStateHeader}> 
@@ -541,7 +549,8 @@ const Chat = () => {
                                 {activeChatMode != ChatMode.Ungrounded &&
                                     <div>
                                         <h2 className={styles.chatEmptyStateSubtitle}>Postavite pitanje ili probajte primjere</h2>
-                                        <ExampleList onExampleClicked={onExampleClicked} />
+                                        <ExampleList onExampleClicked={onExampleClicked} topic="Interni akti" />
+
                                     </div>
                                 }
                                 
@@ -624,19 +633,19 @@ const Chat = () => {
                 !isLAEntryPointVisible &&
                     <LegalAssistant onEvent = {handleLegalAssistantAction} />
             }
-                {answers.length > 0 && activeAnalysisPanelTab && (
-                    <AnalysisPanel
-                        className={styles.chatAnalysisPanel}
-                        activeCitation={activeCitation}
-                        sourceFile={activeCitationSourceFile}
-                        pageNumber={activeCitationSourceFilePageNumber}
-                        onActiveTabChanged={x => onToggleTab(x, selectedAnswer)}
-                        citationHeight="850px"
-                        answer={answers[selectedAnswer][1]}
-                        activeTab={activeAnalysisPanelTab}
-                        izvorniDokument={fileHtmlDisplay}
-                    />
-                )}
+            {answers.length > 0 && activeAnalysisPanelTab && (
+                <AnalysisPanel
+                    className={styles.chatAnalysisPanel}
+                    activeCitation={activeCitation}
+                    sourceFile={activeCitationSourceFile}
+                    pageNumber={activeCitationSourceFilePageNumber}
+                    onActiveTabChanged={x => onToggleTab(x, selectedAnswer)}
+                    citationHeight="850px"
+                    answer={answers[selectedAnswer][1]}
+                    activeTab={activeAnalysisPanelTab}
+                    izvorniDokument={fileHtmlDisplay}
+                />
+            )}
 
                 <Panel
                     headerText="Postavke generiranja odgovora"
@@ -687,7 +696,7 @@ const Chat = () => {
                         </div>
                     }
                 </Panel>
-
+                
                 <Panel
                     headerText="Informacije o aplikaciji"
                     isOpen={isInfoPanelOpen}
@@ -706,6 +715,7 @@ const Chat = () => {
 };
 
 export default Chat;
+
 async function GetText(files: any, content: string, readTextFromFile: (files: any) => Promise<string>, readTextFromDocxFile: (file: any) => Promise<string>) {
     
     if (files[0].file.name.endsWith('.txt')) {

@@ -11,6 +11,8 @@ import "./index.css";
 import { Layout } from "./pages/layout/Layout";
 import NoPage from "./pages/NoPage";
 import Chat from "./pages/chat/Chat";
+import IntroductionEntry from "./pages/introduction/IntroductionEntry";
+import IntroductionChat from "./pages/introduction/IntroductionChat";
 import Content from "./pages/content/Content";
 import Tutor from "./pages/tutor/Tutor";
 import { Tda } from "./pages/tda/Tda";
@@ -23,7 +25,10 @@ export default function App() {
         <HashRouter>
             <Routes>
                 <Route path="/" element={<Layout />}>
-                    <Route index element={<Chat />} />
+                    {/* <Route index element={<Chat />} /> */}
+                    <Route index element={<IntroductionEntry />} />
+                    <Route path="/IntroductionChat" element={<IntroductionChat />} />
+                    <Route path="/Chat" element={<Chat />} />
                     <Route path="content" element={<Content />} />
                     <Route path="*" element={<NoPage />} />
                     <Route path="tutor" element={<Tutor />} />

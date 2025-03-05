@@ -17,6 +17,9 @@ export const enum Approaches {
     CompareWebWithWork = 6,
     DocumentSummary = 7,
     DecisionProposal = 8,
+    Introduction = 9,
+    CreditApproval = 10,
+    OdlukeOdbora = 11
 }
 
 export type ChatRequestOverrides = {
