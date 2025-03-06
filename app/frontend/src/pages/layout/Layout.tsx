@@ -9,10 +9,12 @@ import styles from "./Layout.module.css";
 import { Title } from "../../components/Title/Title";
 import { getFeatureFlags, GetFeatureFlagsResponse } from "../../api";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export const Layout = () => {
+    
     const [featureFlags, setFeatureFlags] = useState<GetFeatureFlagsResponse | null>(null);
-
+    
     async function fetchFeatureFlags() {
         try {
             const fetchedFeatureFlags = await getFeatureFlags();
@@ -22,7 +24,8 @@ export const Layout = () => {
             console.log(error);
         }
     }
-
+    
+    const { t } = useTranslation();
     useEffect(() => {
         fetchFeatureFlags();
     }, []);
@@ -40,12 +43,12 @@ export const Layout = () => {
                         <ul className={styles.headerNavList}>
                             <li>
                                 <NavLink to="/" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
-                                    Razgovor
+                                    {t('Layout.Razgovor')}
                                 </NavLink>
                             </li>
                             <li className={styles.headerNavLeftMargin}>
                                 <NavLink to="/content" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
-                                    Upravljanje sadržajem
+                                    {t("Layout.Sadrzaj")}
                                 </NavLink>
                             </li>
                             {featureFlags?.ENABLE_MATH_ASSISTANT &&

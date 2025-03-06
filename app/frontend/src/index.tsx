@@ -16,10 +16,27 @@ import IntroductionChat from "./pages/introduction/IntroductionChat";
 import Content from "./pages/content/Content";
 import Tutor from "./pages/tutor/Tutor";
 import { Tda } from "./pages/tda/Tda";
+import { useEffect, useState } from "react";
+
+import './locales/i18n';
+import { useTranslation } from "react-i18next";
 
 initializeIcons();
 
+
 export default function App() {
+   
+
+
+    const { i18n } = useTranslation();
+    const [language, setLanguage] = useState(localStorage.getItem("lang") || "en");
+
+    useEffect(() => {
+        i18n.changeLanguage(language);
+        localStorage.setItem("lang", language);
+      }, [language]);
+ 
+
     const [toggle, setToggle] = React.useState('Work');
     return (
         <HashRouter>

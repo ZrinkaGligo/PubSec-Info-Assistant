@@ -1,0 +1,81 @@
+{
+    "finley-introduction": "Pozdrav! Ja sam Finley, AI agent za dokumentaciju.",
+    "finley-init-question" : "Možete li mi reći:✅ svoje ime✅ tvrtku u kojoj radite✅ svoju poziciju kako bih vam što bolje pokazao kako mogu optimizirati vaše svakodnevne zadatke?",
+    "ChatModeButtonGroup.SamoDokumenti": "Samo dokumenti",
+    "Layout.Razgovor": "Razgovor",
+    "Layout.Sadrzaj": "Upravljanje sadržajem",
+    "Question.Input.UpisitePitanje": "Upišite pitanje",
+    "RAIPanel.PonovoOdgovori": "Ponovo odgovori",
+    "Prilagodi": "Prilagodi",
+    "Cancel":"Odustani",
+    "Delete":"Obriši",
+    "Refresh":"Osvježi",
+    "Folder": "Mapa",
+
+    "DocumentsDetailList.Name":"Naziv",
+    "DocumentsDetailList.State":"Status",
+    "DocumentsDetailList.Folder":"Mapa",
+    "DocumentsDetailList.Tags":"Oznake",
+    "DocumentsDetailList.Submitted":"Preneseno dana",
+    "DocumentsDetailList.Modified":"Zadnja izmjena",
+    "DocumentsDetailList.StateDescription":"Status detaljno",
+    "DocumentsDetailList.Resubmit":"Ponovno pošalji",
+
+    "DocumentsDetailList.DialogTitle":"Potvrda ponovnog slanja",
+    "DocumentsDetailList.DialogText":"Jeste li sigurni da želite ponovno poslati odabrane dokumente?",
+    "DocumentsDetailList.DeleteConfirmation":"Potvrda brisanja",
+    "DocumentsDetailList.DeleteText":"Jeste li sigurni da želite obrisati odabrane dokumente?",
+    "DocumentsDetailList.Records":"zapisa.",
+    
+    "DropZone.banner1":"Kliknite za dodavanje",
+    "DropZone.banner2":"ili",
+    "DropZone.banner3":"povucite i ispustite datoteke ovdje",
+
+    "FileStatus.TimeRangeEnd":"Kraj vremenskog perioda",
+    "FileStatus.TimeRange4":"4 sata",
+    "FileStatus.TimeRange12":"12 sati",
+    "FileStatus.TimeRange24":"24 sata",
+    "FileStatus.TimeRange7days":"7 dana",
+    "FileStatus.TimeRange30days":"30 dana",
+    "FileStatus.TimeRangeALLdays":"Cijeli period",
+
+    "FileStatus.FileStates" : "Status dokumenata",
+    "FileStatus.FileState" : "Status dokumenta",
+    "FileStatus.FileStateAll" : "Svi",
+    "FileStatus.FileStateComplete" : "Završeno",
+    "FileStatus.FileStateError" : "Pogreška",
+    "FileStatus.FileStateProcessing" : "U obradi",
+    "FileStatus.FileStateIndexing" : "Indeksiranje",
+    "FileStatus.FileStateQueued" : "U redu čekanja",
+    "FileStatus.FileStateSkipped" : "Preskočeno",
+    "FileStatus.FileStateUPLOADED" : "Preneseno",
+    "FileStatus.FileStateTHROTTLED" : "Ograničeno",
+    "FileStatus.FileStateDELETING" : "Brisanje",
+    "FileStatus.FileStateDELETED" : "Izbrisano",
+
+    "FileStatus.LoadingText" : "Dohvat statusa dokumenata",
+    "FileStatus.Tag" : "Oznaka:",
+    "FileStatus.SelectTag" : "Odabir oznake",
+    "FileStatus.SelectFolder" : "Odabir mape",
+    "FileStatus.UploadedInLast" : "Učitano u posljednjih:",
+  
+
+    "Content.UploadFilesSection":"Status učitavanja",
+    "Content.UploadStatus":"Status učitavanja",
+    "Content.Email":"E-pošta",
+    "Content.MaxNoPages1":"Za maksimalan broj stranica provjerite ",
+    "Content.MaxNoPages2":"dokumentaciju",
+    "Content.ProductivitySoftware" : "Alati za produktivnost",
+    "Content.Data": "Podaci",
+    "Content.DocumentTypeSupportTitle": "Podržani tipovi datoteka",
+    "Content.DocumentTypeSupportObjectives": "Informacijski pomoćnik trenutno podržava sljedeće tipove datoteka:",
+    "Content.HeaderText":"Učitaj datoteke"
+
+
+
+
+    
+
+    
+
+}

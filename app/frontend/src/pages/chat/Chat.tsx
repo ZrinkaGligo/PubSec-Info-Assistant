@@ -16,7 +16,7 @@ import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
 import { OdlukeOdboraExampleList } from "../../components/Example/OdlukeOdboraExampleList";
-import { InterniAktiExampleList } from "../../components/Example/InterniAktiExampleList.tsx";
+import { InterniAktiExampleList } from "../../components/Example/InterniAktiExampleList";
 import { UserChatMessage } from "../../components/UserChatMessage";
 import { AnalysisPanel, AnalysisPanelTabs } from "../../components/AnalysisPanel";
 import { SettingsButton } from "../../components/SettingsButton";
@@ -32,8 +32,10 @@ import React from "react";
 import * as mammoth from "mammoth";
 import { LegalAssistantEntry } from "../../components/LegalAssistant/LegalAssistantEntry";
 import {LegalAssistant} from "../../components/LegalAssistant/LegalAssistant";
+import { useTranslation } from "react-i18next";
 
 const Chat = () => {
+    const { t } = useTranslation();
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [isInfoPanelOpen, setIsInfoPanelOpen] = useState(false);
     const [retrieveCount, setRetrieveCount] = useState<number>(10);
@@ -617,7 +619,7 @@ const Chat = () => {
                         )}
                         <QuestionInput
                             clearOnSend
-                            placeholder="Upišite pitanje"
+                            placeholder={t('Question.Input.UpisitePitanje')}
                             disabled={isLoading}
                             onSend={question => makeApiRequest(question, defaultApproach, {}, {}, {})}
                             onAdjustClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)}

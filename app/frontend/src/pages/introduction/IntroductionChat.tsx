@@ -8,7 +8,7 @@ import { QuestionInput } from "../../components/QuestionInput";
 import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { UserChatMessage } from "../../components/UserChatMessage";
 import { IntroductionInitQuestion } from "../../components/Introduction/IntroductionInitQuestion";
-
+import { useTranslation } from "react-i18next";
 
 
 const IntroductionChat = () => {
@@ -147,6 +147,7 @@ const IntroductionChat = () => {
     //         setHasRun(true);
     //     }
     //   }, [location, hasRun]); // Re-run if location changes
+    const { t } = useTranslation();
 
     return (
         <div className={styles.container}>
@@ -159,7 +160,7 @@ const IntroductionChat = () => {
            <div className={`${styles.chatInputWrapper} ${initQuestionVisible ? styles.chatInputMiddle : styles.chatInputDown}`}>
                 <QuestionInput
                     clearOnSend
-                    placeholder="Upišite pitanje"
+                    placeholder={t('Question.Input.UpisitePitanje')}
                     disabled={isLoading}
                     onSend={onQuestionSend}
                     onAdjustClick={() => {}}
