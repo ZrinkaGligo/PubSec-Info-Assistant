@@ -34,9 +34,13 @@
 }
 
 .answerContainerUngrounded {
-    padding: 20px;
-    background: transparent;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 1px;
+    padding-bottom: 1px;
     outline: transparent;
+    border-radius: 18px;
+    /* border: rgb(230, 230, 230) solid 1px; */
 }
 
 .warningText {
@@ -57,7 +61,7 @@
 
 .answerLogoWork {
     font-size: 18px;
-    color: #349ae6;
+    color: #1b49ef;
     white-space: break-spaces;
     word-break: break-word;
     display: flex;
@@ -71,14 +75,14 @@
 }
 
 .answerIntroduction {
-    font-size: 82px;
+    font-size: 2px;
     font-family: "Roboto", sans-serif;
     
     color: #0066cc;
     white-space: break-spaces;
     word-break: break-word;
     display: flex;
-    align-items: center;
+    align-items: top;
     flex-direction: row;
     gap: 8px;
 }
@@ -115,14 +119,18 @@
     padding-top: 16px;
     padding-bottom: 16px;
 }
-
+.answerMain{
+    display: flex;
+    flex-direction: row;
+}
 .answerTextUngrounded {
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
     line-height: 22px;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    padding-left: 36px;
+    padding-top: 10px;
+    padding-bottom: 1px;
+    padding-left: 1px;
 }
 
 .selected {
@@ -134,11 +142,21 @@
     font-weight: 600;
     line-height: 24px;
 }
-
+.downloadFileContainer{
+    display: flex;
+    justify-content: flex-start; /* Aligns children to the left */
+    margin-left: 0px;
+    padding: 0px;
+}
+.downloadFileBtnContainer{
+    display: flex;
+    justify-content: left; 
+}
 .downloadFile {
-    margin-top: 30px;
+    margin-top: 1px;
     margin-right: 5px;
-    margin-bottom: 45px;
+    margin-bottom: 20px;
+    margin-left: 0px;
     font-weight: 500;
     line-height: 24px;
     border-radius: 4px;
@@ -148,8 +166,9 @@
     cursor: pointer;
     padding-left: 14px;
     padding-right:14px;
-    padding-top: 2px;
-    padding-bottom: 3px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+
 }
 .downloadFile:hover {
     opacity: 0.8;

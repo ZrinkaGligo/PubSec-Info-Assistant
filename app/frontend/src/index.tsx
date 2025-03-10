@@ -13,6 +13,7 @@ import NoPage from "./pages/NoPage";
 import Chat from "./pages/chat/Chat";
 import IntroductionEntry from "./pages/introduction/IntroductionEntry";
 import IntroductionChat from "./pages/introduction/IntroductionChat";
+import { HeaderProvider } from "./components/HeaderProvider";
 import Content from "./pages/content/Content";
 import Tutor from "./pages/tutor/Tutor";
 import { Tda } from "./pages/tda/Tda";
@@ -39,20 +40,23 @@ export default function App() {
 
     const [toggle, setToggle] = React.useState('Work');
     return (
-        <HashRouter>
-            <Routes>
-                <Route path="/" element={<Layout />}>
-                    {/* <Route index element={<Chat />} /> */}
-                    <Route index element={<IntroductionEntry />} />
-                    <Route path="/IntroductionChat" element={<IntroductionChat />} />
-                    <Route path="/Chat" element={<Chat />} />
-                    <Route path="content" element={<Content />} />
-                    <Route path="*" element={<NoPage />} />
-                    <Route path="tutor" element={<Tutor />} />
-                    <Route path="tda" element={<Tda folderPath={""} tags={[]} />} />
-            </Route>
-            </Routes>
-        </HashRouter>    
+        <HeaderProvider>
+            <HashRouter>
+                <Routes>
+                    <Route path="/" element={<Layout />}>
+                        {/* <Route index element={<Chat />} /> */}
+                        <Route index element={<IntroductionEntry />} />
+                        <Route path="/IntroductionChat" element={<IntroductionChat />} />
+                        <Route path="/Chat" element={<Chat />} />
+                        <Route path="content" element={<Content />} />
+                        <Route path="*" element={<NoPage />} />
+                        <Route path="tutor" element={<Tutor />} />
+                        <Route path="tda" element={<Tda folderPath={""} tags={[]} />} />
+                </Route>
+                </Routes>
+            </HashRouter>   
+        </HeaderProvider>
+
     );
 }
 

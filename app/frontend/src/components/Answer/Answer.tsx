@@ -25,6 +25,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeRaw from "rehype-raw";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useHeader } from "../../components/HeaderProvider";
 
 interface Props {
     answer: ChatResponse;
@@ -68,7 +70,7 @@ export const Answer = ({
     setError
 }: Props) => {
     const parsedAnswer = useMemo(() => parseAnswerToHtml(answer.answer, answer.approach, answer.work_citation_lookup, answer.web_citation_lookup, answer.thought_chain, onCitationClicked), [answer]);
-
+    const { setShowHeader } = useHeader();
     const getParagraphsFromHtml = (html: string) => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
@@ -224,12 +226,14 @@ export const Answer = ({
 
     const onSudskeOdlukeClicked = (korisnikInfo: string) => {
         console.log(korisnikInfo);
-        navigate("/Chat", { state: { isFirstRedirect: true } });
+        setShowHeader(true);
+        navigate("/Chat", { state: { isFirstRedirect: true, korisnikInfo: korisnikInfo, source: "LA" } });
 
     }
 
     const onInterniAkti = (korisnikInfo: string) => {
-        console.log(korisnikInfo)
+        setShowHeader(true);
+        navigate("/Chat", { state: { isFirstRedirect: true, korisnikInfo: korisnikInfo, source: "IA" } });
     }
 
     const onOdulukeOdbora = (korisnikInfo: string) => {
@@ -240,8 +244,12 @@ export const Answer = ({
         const final = answerHtml.includes("#@#");
         return final;       
     }
+    const { t } = useTranslation();
 
     return (
+        <div className={styles.answerMain}>
+        {answer.approach == Approaches.Introduction && <AnswerIcon approach={answer.approach} />}
+
         <Stack className={`${(answer.approach == Approaches.ReadRetrieveRead || answer.approach == Approaches.DocumentSummary || answer.approach == Approaches.DecisionProposal || answer.approach == Approaches.OdlukeOdbora || answer.approach == Approaches.CreditApproval) ? styles.answerContainerWork :
             answer.approach == Approaches.ChatWebRetrieveRead ? styles.answerContainerWeb :
                 answer.approach == Approaches.CompareWorkWithWeb || answer.approach == Approaches.CompareWebWithWork ? styles.answerContainerCompare :
@@ -251,14 +259,14 @@ export const Answer = ({
             {/* Proces razmišljanja */}
             <Stack.Item>
                 <Stack horizontal horizontalAlign="space-between">
-                    <AnswerIcon approach={answer.approach} />
+                    {(answer.approach == Approaches.ReadRetrieveRead) && (<AnswerIcon approach={answer.approach} />)}
                     <div>
                         {answer.approach != Approaches.GPTDirect && answer.approach != Approaches.Introduction &&
                             <IconButton
                                 style={{ color: "black" }}
                                 iconProps={{ iconName: "Lightbulb" }}
-                                title="Pokaži proces razmišljanja"
-                                ariaLabel="Pokaži proces razmišljanja"
+                                title={t("Answer.ThoughtProcess")}
+                                ariaLabel={t("Answer.ThoughtProcess")}
                                 onClick={() => onThoughtProcessClicked()}
                                 disabled={!answer.thoughts}
                             />
@@ -267,8 +275,8 @@ export const Answer = ({
                             <IconButton
                                 style={{ color: "black" }}
                                 iconProps={{ iconName: "ClipboardList" }}
-                                title="Pokaži prateći sadržaj"
-                                ariaLabel="Pokaži prateći sadržaj"
+                                title={t("Answer.ShowSupportingContent")}
+                                ariaLabel={t("Answer.ShowSupportingContent")}
                                 onClick={() => onSupportingContentClicked()}
                                 disabled={!answer.data_points || !answer.data_points.length}
                             />
@@ -281,7 +289,7 @@ export const Answer = ({
             <Stack.Item grow>
                 {(answer.approach != Approaches.GPTDirect && answer.approach != Approaches.Introduction) &&
                     <div className={styles.protectedBanner}>
-                        <ShieldCheckmark20Regular></ShieldCheckmark20Regular>Vaši poslovni i privatni podaci su zaštićeni
+                        <ShieldCheckmark20Regular></ShieldCheckmark20Regular>{t("Answer.ProtectedData")}
                     </div>
                 }
                 {answer.answer && <div className={(answer.approach == Approaches.GPTDirect || answer.approach == Approaches.Introduction)? styles.answerTextUngrounded : styles.answerText}><ReactMarkdown children={parsedAnswer.answerHtml} rehypePlugins={[rehypeRaw, rehypeSanitize]}></ReactMarkdown></div>}
@@ -315,19 +323,19 @@ export const Answer = ({
 
             )}
             {(parsedAnswer.approach == Approaches.Introduction && !!parsedAnswer.answerHtml.length && isFinal(parsedAnswer.answerHtml)) && (
-                <Stack.Item>
-                    <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <div className={styles.downloadFile} onClick={() => onInterniAkti && onInterniAkti(parsedAnswer.answerHtml)}> Interni akti</div>
-                        <div className={styles.downloadFile} onClick={() => onOdulukeOdbora && onOdulukeOdbora(parsedAnswer.answerHtml)}> Odluke odbora</div>
-                        <div className={styles.downloadFile} onClick={() => onSudskeOdlukeClicked && onSudskeOdlukeClicked("#@# Ime:Zrinka, Tvrtka:Asee Solutions, Pozicija:Developer, Email:zrinka.b@gmail.com. #@#")}> Sudske odluke</div>
-                        
-                    </Stack>
-                </Stack.Item>
+                <div className={styles.downloadFileContainer}>
+                    <Stack.Item>
+                        <Stack horizontal wrap tokens={{ childrenGap: 2 }} className={styles.downloadFileBtnContainer}>
+                            <div className={styles.downloadFile} onClick={() => onInterniAkti && onInterniAkti(parsedAnswer.answerHtml)}> {t("Answer.InternalActs")}</div>
+                            <div className={styles.downloadFile} onClick={() => onSudskeOdlukeClicked && onSudskeOdlukeClicked(parsedAnswer.answerHtml)}>{t("Answer.RelevantAuthorities")}</div>
+                        </Stack>
+                    </Stack.Item>
+                </div>
             )}
             {(parsedAnswer.approach == Approaches.DocumentSummary && !!parsedAnswer.answerHtml.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <div className={styles.downloadFile} onClick={() => onDecisionProposalClicked && onDecisionProposalClicked(parsedAnswer.answerHtml)}> Generiraj prijedlog odluke</div>
+                        <div className={styles.downloadFile} onClick={() => onDecisionProposalClicked && onDecisionProposalClicked(parsedAnswer.answerHtml)}> {t("Answer.GenerateDecisionProposal")}</div>
                         
                         
                     </Stack>
@@ -337,7 +345,7 @@ export const Answer = ({
             {(parsedAnswer.approach == Approaches.DocumentSummary && !!parsedAnswer.work_citations.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <div className={styles.downloadFile} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> Generiraj prijedlog odluke</div>
+                        <div className={styles.downloadFile} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> {t("Answer.GenerateDecisionProposal")} </div>
                     </Stack>
                 </Stack.Item>
             )}
@@ -345,7 +353,7 @@ export const Answer = ({
             {(parsedAnswer.approach == Approaches.DecisionProposal && !!parsedAnswer.work_citations.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <div className={styles.downloadFile} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> Preuzmite prijedlog odluke </div>
+                        <div className={styles.downloadFile} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> {t("Answer.DownloadDecision")} </div>
                     </Stack>
                 </Stack.Item>
             )}
@@ -353,7 +361,7 @@ export const Answer = ({
             {((parsedAnswer.approach == Approaches.ReadRetrieveRead || parsedAnswer.approach == Approaches.DocumentSummary || answer.approach == Approaches.DecisionProposal) && !!parsedAnswer.work_citations.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <span className={styles.citationLearnMore}>Citati:</span>
+                        <span className={styles.citationLearnMore}>{t("Answer.Citations")}</span>
                         {parsedAnswer.work_citations.map((x, i) => {
                             const path = getCitationFilePath(x);
                             return (
@@ -371,7 +379,7 @@ export const Answer = ({
                 <div>
                     <Stack.Item>
                         <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                            <span className={styles.citationLearnMore}>Web citati:</span>
+                            <span className={styles.citationLearnMore}>{t("Answer.WebCitations")}</span>
                             {parsedAnswer.web_citations.map((x, i) => {
                                 const path = getCitationFilePath(x);
                                 return (
@@ -386,7 +394,7 @@ export const Answer = ({
                     <div style={{ width: "100%", margin: "10px 0" }}></div>
                     <Stack.Item>
                         <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                            <span className={styles.citationLearnMore}>Citati iz dokumenata:</span>
+                            <span className={styles.citationLearnMore}> {t("Answer.DocumentCitations")}</span>
                             {parsedAnswer.work_citations.map((x, i) => {
                                 const path = getCitationFilePath(x);
                                 return (
@@ -404,7 +412,7 @@ export const Answer = ({
                 <div>
                     <Stack.Item>
                         <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                            <span className={styles.citationLearnMore}>Citati iz dokumenata:</span>
+                            <span className={styles.citationLearnMore}>{t("Answer.DocumentCitations")}</span>
                             {parsedAnswer.work_citations.map((x, i) => {
                                 const path = getCitationFilePath(x);
                                 return (
@@ -418,7 +426,7 @@ export const Answer = ({
                     </Stack.Item>
                     <Stack.Item>
                         <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                            <span className={styles.citationLearnMore}>Web citati:</span>
+                            <span className={styles.citationLearnMore}> {t("Answer.WebCitations")} </span>
                             {parsedAnswer.web_citations.map((x, i) => {
                                 const path = getCitationFilePath(x);
                                 return (
@@ -436,7 +444,7 @@ export const Answer = ({
             {!!parsedAnswer.followupQuestions.length && showFollowupQuestions && onFollowupQuestionClicked && (
                 <Stack.Item>
                     <Stack horizontal wrap className={`${!!parsedAnswer.work_citations.length ? styles.followupQuestionsList : !!parsedAnswer.web_citations.length ? styles.followupQuestionsList : ""}`} tokens={{ childrenGap: 6 }}>
-                        <span className={styles.followupQuestionLearnMore}>Naknadna pitanja:</span>
+                        <span className={styles.followupQuestionLearnMore}> {t("Answer.FollowUpQuestions")} </span>
                         {parsedAnswer.followupQuestions.map((x, i) => {
                             return (
                                 <a key={i} className={styles.followupQuestion} title={x} onClick={() => onFollowupQuestionClicked(x)}>
@@ -454,5 +462,7 @@ export const Answer = ({
                 <RAIPanel approach={answer.approach} chatMode={chatMode} onAdjustClick={onAdjustClick} onRegenerateClick={onRegenerateClick} onWebSearchClicked={onWebSearchClicked} onWebCompareClicked={onWebCompareClicked} onRagCompareClicked={onRagCompareClicked} onRagSearchClicked={onRagSearchClicked} />
             </Stack.Item>} */}
         </Stack>
+        </div>
+
     );
 };

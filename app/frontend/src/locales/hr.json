@@ -1,6 +1,10 @@
 {
     "finley-introduction": "Pozdrav! Ja sam Finley, AI agent za dokumentaciju.",
-    "finley-init-question" : "Možete li mi reći:✅ svoje ime✅ tvrtku u kojoj radite✅ svoju poziciju kako bih vam što bolje pokazao kako mogu optimizirati vaše svakodnevne zadatke?",
+    "finley-init-question1" : "Možete li mi reći:",
+    "finley-init-question2" : "svoje ime",
+    "finley-init-question3" : "tvrtku u kojoj radite,",
+    "finley-init-question4" : "svoju poziciju",
+    "finley-init-question5" : "kako bih vam što bolje pokazao kako mogu optimizirati vaše svakodnevne zadatke?",
     "ChatModeButtonGroup.SamoDokumenti": "Samo dokumenti",
     "Layout.Razgovor": "Razgovor",
     "Layout.Sadrzaj": "Upravljanje sadržajem",
@@ -58,7 +62,6 @@
     "FileStatus.SelectTag" : "Odabir oznake",
     "FileStatus.SelectFolder" : "Odabir mape",
     "FileStatus.UploadedInLast" : "Učitano u posljednjih:",
-  
 
     "Content.UploadFilesSection":"Status učitavanja",
     "Content.UploadStatus":"Status učitavanja",
@@ -69,7 +72,44 @@
     "Content.Data": "Podaci",
     "Content.DocumentTypeSupportTitle": "Podržani tipovi datoteka",
     "Content.DocumentTypeSupportObjectives": "Informacijski pomoćnik trenutno podržava sljedeće tipove datoteka:",
-    "Content.HeaderText":"Učitaj datoteke"
+    "Content.HeaderText":"Učitaj datoteke",
+
+    "Chat.HeaderTextIA": "Interni Akti – Digitalni Savjetnik",
+    "Chat.HeaderTextLA": "Pitajte informacije o odlukama VSRH",
+    "Chat.AI":"Legal AI koristi umjetnu inteligenciju.",
+    "Chat.AskQuestion":"Postavite pitanje ili probajte primjere",
+    "Chat.Close":"Zatvori",
+    "Chat.InfoPanel":"Informacije o aplikaciji",
+    "Chat.UserPersona":"Korisnička persona",
+    "Chat.SystemPersona":"Persona sustava",
+    "Chat.FollowUpQuestions":"Predloži dodatna pitanja",
+    "Chat.RetrieveCount":"Dohvati ovoliko dokumenata iz pretrage:",
+    "Chat.ConfigPanel":"Postavke generiranja odgovora",
+
+    "LegalAssistant.DecisionProposalGeneration": "Generiranje prijedloga odluke",
+    "LegalAssistant.SummaryGeneration" : "Generiranje sažetka dokumenata",
+    "LegalAssistantEntry.LegalAssistant" : "Napredni pomoćnik",
+
+    "ClearChatButton.OcistiRazgovor": "Očisti razgovor",
+
+    "AnswerIcon.Work" : "Dokumenti", 
+
+    "AnswerLoading.Generating":"Generiram odgovor",
+
+    "Answer.ProtectedData":"Vaši poslovni i privatni podaci su zaštićeni",
+    "Answer.ShowSupportingContent":"Pokaži prateći sadržaj",
+    "Answer.Citations":"Citati:",
+    "Answer.WebCitations":"Web citati:",
+    "Answer.DocumentCitations":"Citati iz dokumenata:",
+    "Answer.ThoughtProcess":"Pokaži proces razmišljanja",
+    "Answer.LegalDisclaimer":"AI-generirani sadržaj može biti netočan",
+    "Answer.InternalActs":"Interni akti",
+    "Answer.RelevantAuthorities":"Odluke nadležnih tijela",
+    "Answer.GenerateDecisionProposal":"Generiraj prijedlog odluke",
+    "Answer.DownloadDecision" : "Preuzmite prijedlog odluke",
+    "Answer.FollowUpQuestions" : "Naknadna pitanja:"
+
+
 
 
 

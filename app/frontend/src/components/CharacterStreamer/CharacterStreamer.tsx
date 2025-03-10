@@ -4,6 +4,8 @@ import { Approaches, ChatResponse } from '../../api';
 import readNDJSONStream from "ndjson-readablestream";
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import { useTranslation } from "react-i18next";
+
 
 const CharacterStreamer = ({ eventSource, nonEventString, onStreamingComplete, classNames, typingSpeed = 30, readableStream, setAnswer, approach = Approaches.ChatWebRetrieveRead, setError }:
    { readableStream?: ReadableStream, setAnswer?: (data: ChatResponse) => void, eventSource?: any; nonEventString?: string, onStreamingComplete: any; classNames?: string; typingSpeed?: number, approach?: Approaches, setError?: (data: string) => void}) => {
@@ -160,7 +162,10 @@ const CharacterStreamer = ({ eventSource, nonEventString, onStreamingComplete, c
     }, typingSpeed); // Adjust based on desired "typing" speed
   };
 
-  return isLoading ? <div className={classNames}>Generiram odgovor{dots}</div> : 
+  
+    const { t } = useTranslation();
+
+  return isLoading ? <div className={classNames}> {t("AnswerLoading.Generating")} {dots}</div> : 
         <div className={classNames}><ReactMarkdown children={output} rehypePlugins={[rehypeRaw, rehypeSanitize]}></ReactMarkdown>
         <div ref={chatMessageStreamEnd} /></div>;
 };

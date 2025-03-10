@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Outlet, NavLink, Link } from "react-router-dom";
-import openai from "../../assets/openai.svg";
+import openai from "../../assets/asee-logo.svg";
 import legalAssistant from "../../assets/icon-legal-ai.webp";
 import { WarningBanner } from "../../components/WarningBanner/WarningBanner";
 import styles from "./Layout.module.css";
@@ -10,9 +10,11 @@ import { Title } from "../../components/Title/Title";
 import { getFeatureFlags, GetFeatureFlagsResponse } from "../../api";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useHeader } from "../../components/HeaderProvider";
+
 
 export const Layout = () => {
-    
+    const { showHeader } = useHeader();
     const [featureFlags, setFeatureFlags] = useState<GetFeatureFlagsResponse | null>(null);
     
     async function fetchFeatureFlags() {
@@ -31,8 +33,10 @@ export const Layout = () => {
     }, []);
 
     return (
+        
         <div className={styles.layout}>
-            <header className={styles.header} role={"banner"}>
+            <>
+            {showHeader && <header className={styles.header} role={"banner"}>
                 <WarningBanner />
                 <div className={styles.headerContainer}>
                     <div className={styles.headerTitleContainer}>
@@ -74,13 +78,14 @@ export const Layout = () => {
                     </ul>
                     </nav>
                 </div>
-            </header>
+            </header>}
 
             <Outlet />
 
             <footer>
                 <WarningBanner />
             </footer>
+        </>
         </div>
     );
 };

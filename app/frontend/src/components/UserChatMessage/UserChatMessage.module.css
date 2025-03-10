@@ -89,15 +89,29 @@
     font-variation-settings: unset;
 }
 .userMessageIntroduction {
+    flex-grow: 1;
+    max-width: 1028px;
+    width: 100%;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* or 'scroll' if you always want the scrollbar to be visible */
+    max-height: calc(100vh - 313px); /* optional, adjust according to your layout */
     color: rgb(0, 0, 0);
-    align-items: bottom;
 
-    font-size: 18px;
+    font-size:20px;
     font-weight: 400;
-    line-height: 22px;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    border: rgb(230, 230, 230) solid 1px;
+    background-color: white;
+    border-radius: 12px;
 }
+
 .userMessage {
     color: white;
 }

@@ -15,11 +15,10 @@ const EXAMPLES_InterniAkti: ExampleModel[] = [
     { text: "Koji su postupci zaposlenika defirani u slučaju primjećivanja pranja novca (AML)?", value: "Koji su postupci zaposlenika defirani u slučaju primjećivanja pranja novca (AML)?" },
     { text: "Koji su glavni interni i regulatorni zahtjevi koje banka mora ispuniti prilikom odobravanja donacija?", value: "Koji su glavni interni i regulatorni zahtjevi koje banka mora ispuniti prilikom odobravanja donacija?" }
 ];
-
-const EXAMPLES_OdlukeOdbora: ExampleModel[] = [
-    { text: "Odluka odbora 1?", value: "Koje su ključne obaveze banke u zaštiti osobnih podataka klijenata prema GDPR-u" },
-    { text: "Odluka odbora 2?", value: "Koji su postupci zaposlenika defirani u slučaju primjećivanja pranja novca (AML)?" },
-    { text: "Odluka odbora 3?", value: "Koji su glavni interni i regulatorni zahtjevi koje banka mora ispuniti prilikom odobravanja donacija?" }
+const EXAMPLES_InterniAkti_EN: ExampleModel[] = [
+    { text: "What are the key obligations of a bank in protecting client's personal data under GDPR?", value: "What are the key obligations of a bank in protecting clients' personal data under GDPR?" },
+    { text: "What procedures are defined for employees in case of detecting money laundering (AML)?", value: "What procedures are defined for employees in case of detecting money laundering (AML)?" },
+    { text: "What are the main internal and regulatory requirements that a bank must meet when approving donations?", value: "What are the main internal and regulatory requirements that a bank must meet when approving donations?" }
 ];
 const EXAMPLES: ExampleModel[] = [
     { text: "Molio bih primjere revizija odluka županijskih sudova", value: "Molio bih primjere revizija odluka županijskih sudova" },
@@ -28,16 +27,37 @@ const EXAMPLES: ExampleModel[] = [
     
     
 ];
+const EXAMPLES_EN: ExampleModel[] = [
+    { text: "I would like examples of revisions of court decisions", value: "I would like examples of revisions of court decisions" },
+    { text: "How is the second competent court determined in Croatia?", value: "How is the second competent court determined in Croatia?" },
+    { text: "How are the decisions of the European Court applied in Croatia?", value: "How are the decisions of the European Court applied in Croatia?" }
+];
 
+const language = () => {
+    return localStorage.getItem("lang");
+}
 const GetExamples = (topic: string) => {
-    if (topic === "Interni akti") {
-        return EXAMPLES_InterniAkti;
+    if(language() === "hr"){
+        if (topic === "IA") {
+            return EXAMPLES_InterniAkti;
+        }
+        else if (topic === "LA") {
+            return EXAMPLES;
+        }
+        else {
+            return EXAMPLES;
+        }
     }
-    else if (topic === "Odluke odbora") {
-        return EXAMPLES_OdlukeOdbora;
-    }
-    else {
-        return EXAMPLES;
+    else{
+            if (topic === "IA") {
+                return EXAMPLES_InterniAkti_EN;
+            }
+            else if (topic === "LA") {
+                return EXAMPLES_EN;
+            }
+            else {
+                return EXAMPLES_EN;
+            }
     }
 }
 interface Props {

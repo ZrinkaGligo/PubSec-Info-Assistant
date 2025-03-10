@@ -1,12 +1,16 @@
 {
     "finley-introduction": "Hello! I'm Finley, an AI documentation agent.",
-    "finley-init-question" : "Can you tell me:✅ Your name✅ The company you work for✅ Your position? So I can better show you how I can optimize your daily tasks?",
+    "finley-init-question1" : "Can you tell me:",
+    "finley-init-question2" : "Your name",
+    "finley-init-question3" : "The company you work for,",
+    "finley-init-question4" : "Your position",
+    "finley-init-question5" : "So I can better show you how I can optimize your daily tasks?",
     "ChatModeButtonGroup.SamoDokumenti": "Documents Only",
     "Layout.Razgovor": "Conversation",
     "Layout.Sadrzaj": "Manage Content",
     "Question.Input.UpisitePitanje": "Ask anything",
     "RAIPanel.PonovoOdgovori": "Resend",
-    "Prilagodi": "Prilagodi",
+    "Prilagodi": "Adjust",
     "Cancel":"Odustani",
     "Delete":"Delete",
     "Refresh":"Refresh",
@@ -59,6 +63,7 @@
     "FileStatus.SelectFolder" : "Select folder",
     "FileStatus.UploadedInLast" : "Uploaded in last:",
 
+    "Content.UploadFilesSection":"Files status",
     "Content.UploadStatus":"Upload Status",
     "Content.Email":"Email",
     "Content.MaxNoPages1":"For page count maximum check documentation ",
@@ -67,6 +72,41 @@
     "Content.Data": "Data",
     "Content.DocumentTypeSupportTitle": "Supported file types",
     "Content.DocumentTypeSupportObjectives": "The Information Assistant copilot template currently supports the following file types:",
-    "Content.HeaderText":"Upload Files"
+    "Content.HeaderText":"Upload Files",
+
+    "Chat.HeaderTextIA": "Internal Acts - Digital Advisor",
+    "Chat.HeaderTextLA": "Inquire about the decisions made by the Supreme Court of Croatia",
+    "Chat.AI":"Legal AI is driven by artificial intelligence.",
+    "Chat.AskQuestion":"Ask your question or explore the examples",
+    "Chat.Close":"Close",
+    "Chat.InfoPanel":"Information",
+    "Chat.UserPersona":"User Persona",
+    "Chat.SystemPersona":"System Persona",
+    "Chat.FollowUpQuestions":"Suggest follow-up questions",
+    "Chat.RetrieveCount":"Retrieve this many documents from search:",
+    "Chat.ConfigPanel":"Configure answer generation",
+
+    "LegalAssistant.DecisionProposalGeneration": "Decision proposal generation",
+    "LegalAssistant.SummaryGeneration" : "Document summarization",
+    "LegalAssistantEntry.LegalAssistant" : "Advanced Document Assistant",
+    
+    "ClearChatButton.OcistiRazgovor": "Generating answer",
+
+    "AnswerIcon.Work" : "Work",
+    
+    "AnswerLoading.Generating":"Generating answer",
+
+    "Answer.ProtectedData":"Your personal and company data are protected",
+    "Answer.ShowSupportingContent":"Show supporting content",
+    "Answer.Citations":"Citations:",
+    "Answer.WebCitations":"Web Citations:",
+    "Answer.DocumentCitations":"Work Citations:",
+    "Answer.ThoughtProcess":"Show thought process",
+    "Answer.LegalDisclaimer":"AI-generated content may be incorrect",
+    "Answer.InternalActs":"Internal Acts",
+    "Answer.RelevantAuthorities":"Decisions of Relevant Authorities",
+    "Answer.GenerateDecisionProposal":"Generate Decision Proposal",
+    "Answer.DownloadDecision" : "Download the Proposed Decision",
+    "Answer.FollowUpQuestions" : "Follow up questions:"
 
 }

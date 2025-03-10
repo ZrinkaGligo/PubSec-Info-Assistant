@@ -4,7 +4,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Checkbox, Panel, DefaultButton, TextField, SpinButton, Separator, Toggle, Label } from "@fluentui/react";
 import Switch from 'react-switch';
-import { GlobeFilled, BuildingMultipleFilled, AddFilled, ChatSparkleFilled } from "@fluentui/react-icons";
+import { GlobeFilled, BuildingMultipleFilled, AddFilled, ChatSparkleFilled, DocumentBulletListFilled, CommunicationPersonFilled} from "@fluentui/react-icons";
 import { ITag } from '@fluentui/react/lib/Pickers';
 
 import styles from "./Chat.module.css";
@@ -33,12 +33,14 @@ import * as mammoth from "mammoth";
 import { LegalAssistantEntry } from "../../components/LegalAssistant/LegalAssistantEntry";
 import {LegalAssistant} from "../../components/LegalAssistant/LegalAssistant";
 import { useTranslation } from "react-i18next";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Chat = () => {
     const { t } = useTranslation();
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [isInfoPanelOpen, setIsInfoPanelOpen] = useState(false);
     const [retrieveCount, setRetrieveCount] = useState<number>(10);
+    const location = useLocation();
     const [useSuggestFollowupQuestions, setUseSuggestFollowupQuestions] = useState<boolean>(true);
     const [userPersona, setUserPersona] = useState<string>("analyst");
     const [systemPersona, setSystemPersona] = useState<string>("an Assistant");
@@ -79,6 +81,7 @@ const Chat = () => {
     const [abortController, setAbortController] = useState<AbortController | undefined>(undefined);
 
     const [isLAEntryPointVisible, setAssistentEntryPointVisible] = useState(true);
+    const [isIAEntryPointVisible, setIAEntryPointVisible] = useState(true);
     const [fileHtmlDisplay, setFileHtmlDisplay] = useState("");
 
     async function fetchFeatureFlags() {
@@ -100,6 +103,7 @@ const Chat = () => {
                                 work_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } },
                                 web_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } },
                                 thought_chain: { [key: string]: string },
+                                word_folder?: string,
                                 display_question?: string) => {
         lastQuestionRef.current = question;
         lastQuestionWorkCitationRef.current = work_citation_lookup;
@@ -113,8 +117,12 @@ const Chat = () => {
         setActiveCitation(undefined);
         setActiveAnalysisPanelTab(undefined);
 
+        const work_directory = selectedFolders.includes("selectAll") ? "All" : selectedFolders.length == 0 ? "All" : selectedFolders.join(",");
+
         try {
             const display_question_text = display_question || question;
+            const work_directory_combine = word_folder || work_directory;
+            console.log("Directory: " + work_directory_combine);
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequest = {
                 history: [...history, { user: question, bot: undefined }],
@@ -131,7 +139,7 @@ const Chat = () => {
                     aiPersona: "",
                     responseLength: responseLength,
                     responseTemp: responseTemp,
-                    selectedFolders: selectedFolders.includes("selectAll") ? "All" : selectedFolders.length == 0 ? "All" : selectedFolders.join(","),
+                    selectedFolders: work_directory_combine,
                     selectedTags: selectedTags.map(tag => tag.name).join(",")
                 },
                 citation_lookup: approach == Approaches.CompareWebWithWork ? web_citation_lookup : approach == Approaches.CompareWorkWithWeb ? work_citation_lookup : {},
@@ -281,6 +289,21 @@ const Chat = () => {
 
     useEffect(() => {fetchFeatureFlags()}, []);
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
+    useEffect(() => {
+        console.log("IAEntryPointVisible: ", isIAEntryPointVisible);
+        console.log("LAEntryPointVisible: ", isLAEntryPointVisible);
+    }, [isIAEntryPointVisible, isLAEntryPointVisible]); 
+
+    useEffect(() => {
+        if (location.state?.source === "IA") {
+            setIAEntryPointVisible(true);
+            setAssistentEntryPointVisible(false);
+        } else {
+            setIAEntryPointVisible(false);
+            setAssistentEntryPointVisible(true);
+        }
+
+      }, [location, isLAEntryPointVisible, isIAEntryPointVisible]); 
 
     const onRetrieveCountChange = (_ev?: React.SyntheticEvent<HTMLElement, Event>, newValue?: string) => {
         setRetrieveCount(parseInt(newValue || "5"));
@@ -511,28 +534,40 @@ const Chat = () => {
             </div>
             <div className={styles.chatRoot}>
             
-            {isLAEntryPointVisible && <div className={styles.chatContainer}>
+            {(isLAEntryPointVisible || isIAEntryPointVisible )&& <div className={styles.chatContainer}>
                     {!lastQuestionRef.current ? (
                         <div>
                             <div className={styles.chatEmptyState}>
                                 {activeChatMode == ChatMode.WorkOnly ? 
                                     <div>
-                                        <div className={styles.chatEmptyStateHeader}> 
-                                            <BuildingMultipleFilled fontSize={"100px"} primaryFill={"rgba(27, 74, 239, 1)"} aria-hidden="true" aria-label="Chat with your Work Data logo" />
+                                        <>
+                                            <div className={styles.chatEmptyStateHeader}> 
+                                                <>
+                                                    {isLAEntryPointVisible && <BuildingMultipleFilled fontSize={"100px"} primaryFill={"rgb(71, 71, 71)"} aria-hidden="true" aria-label="Chat with your Work Data logo" />}
+                                                    {isIAEntryPointVisible && <DocumentBulletListFilled fontSize={"100px"} primaryFill={"rgb(71, 71, 71)"} aria-hidden="true" aria-label="Work Data" />}
+                                                </>
                                             </div>
-                                        <h1 className={styles.chatEmptyStateTitle}>Pitajte informacije o odlukama VSRH</h1>
+
+
+                                            <>
+                                    </> 
+
+
+                                            {(isLAEntryPointVisible) && <h1 className={styles.chatEmptyStateTitle}>{t("Chat.HeaderTextLA")}</h1>}
+                                            {(isIAEntryPointVisible) && <h1 className={styles.chatEmptyStateTitle}>{t("Chat.HeaderTextIA")}</h1>}
+                                        </>
                                     </div>
                                 : activeChatMode == ChatMode.WorkPlusWeb && activeApproach == Approaches.Introduction ?
                                      <div>
                                          <div className={styles.introductionChatStyle}> 
-                                             <BuildingMultipleFilled fontSize={"80px"} primaryFill={"rgba(27, 74, 239, 1)"} aria-hidden="true" aria-label="Chat with your Work and Web Data logo" /><AddFilled fontSize={"50px"} primaryFill={"rgba(0, 0, 0, 0.7)"} aria-hidden="true" aria-label=""/><GlobeFilled fontSize={"80px"} primaryFill={"rgba(24, 141, 69, 1)"} aria-hidden="true" aria-label="" />
+                                             <BuildingMultipleFilled fontSize={"80px"} primaryFill={"rgb(118, 74, 239)"} aria-hidden="true" aria-label="Chat with your Work and Web Data logo" /><AddFilled fontSize={"50px"} primaryFill={"rgba(0, 0, 0, 0.7)"} aria-hidden="true" aria-label=""/><GlobeFilled fontSize={"80px"} primaryFill={"rgba(24, 141, 69, 1)"} aria-hidden="true" aria-label="" />
                                          </div>
                                          <h1 className={styles.chatEmptyStateTitle}>Chat with your work and web data</h1>
                                      </div>
                                 : activeChatMode == ChatMode.WorkPlusWeb ?
                                     <div>
                                         <div className={styles.chatEmptyStateHeader}> 
-                                            <BuildingMultipleFilled fontSize={"80px"} primaryFill={"rgba(27, 74, 239, 1)"} aria-hidden="true" aria-label="Chat with your Work and Web Data logo" /><AddFilled fontSize={"50px"} primaryFill={"rgba(0, 0, 0, 0.7)"} aria-hidden="true" aria-label=""/><GlobeFilled fontSize={"80px"} primaryFill={"rgba(24, 141, 69, 1)"} aria-hidden="true" aria-label="" />
+                                            <BuildingMultipleFilled fontSize={"80px"} primaryFill={"rgba(188, 74, 239, 1)"} aria-hidden="true" aria-label="Chat with your Work and Web Data logo" /><AddFilled fontSize={"50px"} primaryFill={"rgba(0, 0, 0, 0.7)"} aria-hidden="true" aria-label=""/><GlobeFilled fontSize={"80px"} primaryFill={"rgba(24, 141, 69, 1)"} aria-hidden="true" aria-label="" />
                                         </div>
                                         <h1 className={styles.chatEmptyStateTitle}>Chat with your work and web data</h1>
                                     </div>
@@ -546,12 +581,14 @@ const Chat = () => {
                                     </div>
                                 }
                                 <span className={styles.chatEmptyObjectives}>
-                                    <i>Legal AI koristi umjetnu inteligenciju.   </i>
+                                    <i>{t("Chat.AI")}</i>
                                 </span>
                                 {activeChatMode != ChatMode.Ungrounded &&
                                     <div>
-                                        <h2 className={styles.chatEmptyStateSubtitle}>Postavite pitanje ili probajte primjere</h2>
-                                        <ExampleList onExampleClicked={onExampleClicked} topic="Interni akti" />
+                                        <h2 className={styles.chatEmptyStateSubtitle}>{t("Chat.AskQuestion")}</h2>
+                                        
+                                        {isIAEntryPointVisible && <ExampleList onExampleClicked={onExampleClicked} topic="IA" />}
+                                        {isLAEntryPointVisible && <ExampleList onExampleClicked={onExampleClicked} topic="LA" />}
 
                                     </div>
                                 }
@@ -610,8 +647,12 @@ const Chat = () => {
                     <div className={styles.chatInput}>
                         {activeChatMode == ChatMode.WorkPlusWeb && (
                             <div className={styles.chatInputWarningMessage}> 
-                                {defaultApproach == Approaches.ReadRetrieveRead && 
-                                    <div>Questions will be answered by default from Work <BuildingMultipleFilled fontSize={"20px"} primaryFill={"rgba(27, 74, 239, 1)"} aria-hidden="true" aria-label="Work Data" /></div>}
+                                {defaultApproach == Approaches.ReadRetrieveRead && (
+                                    <>
+                                       isLAEntryPointVisible && <div>Questions will be answered by default from Work <BuildingMultipleFilled fontSize={"20px"} primaryFill={"rgb(74, 239, 203)"} aria-hidden="true" aria-label="Work Data" /></div>
+                                       isIAEntryPointVisible && <div>Questions will be answered by default from Work <DocumentBulletListFilled fontSize={"20px"} primaryFill={"rgb(58, 211, 58)"} aria-hidden="true" aria-label="Work Data" /></div>
+                                    </> 
+                                )}
                                 {defaultApproach == Approaches.ChatWebRetrieveRead && 
                                     <div>Questions will be answered by default from Web <GlobeFilled fontSize={"20px"} primaryFill={"rgba(24, 141, 69, 1)"} aria-hidden="true" aria-label="Web Data" /></div>
                                 }
@@ -632,7 +673,7 @@ const Chat = () => {
                 </div>
             }
             {
-                !isLAEntryPointVisible &&
+                (!isLAEntryPointVisible && !isIAEntryPointVisible) &&
                     <LegalAssistant onEvent = {handleLegalAssistantAction} />
             }
             {answers.length > 0 && activeAnalysisPanelTab && (
@@ -650,7 +691,7 @@ const Chat = () => {
             )}
 
                 <Panel
-                    headerText="Postavke generiranja odgovora"
+                    headerText={t("Chat.ConfigPanel")}
                     isOpen={isConfigPanelOpen}
                     isBlocking={false}
                     onDismiss={() => setIsConfigPanelOpen(false)}
@@ -671,7 +712,7 @@ const Chat = () => {
                     {activeChatMode != ChatMode.Ungrounded &&
                         <SpinButton
                             className={styles.chatSettingsSeparator}
-                            label="Dohvati ovoliko dokumenata iz pretrage:"
+                            label={t("Chat.RetrieveCount")}
                             min={1}
                             max={50}
                             defaultValue={retrieveCount.toString()}
@@ -682,12 +723,12 @@ const Chat = () => {
                         <Checkbox
                             className={styles.chatSettingsSeparator}
                             checked={useSuggestFollowupQuestions}
-                            label="Predloži dodatna pitanja"
+                            label={t("Chat.FollowUpQuestions")}
                             onChange={onUseSuggestFollowupQuestionsChange}
                         />
                     }
-                    <TextField className={styles.chatSettingsSeparator} defaultValue={userPersona} label="Korisnička persona" onChange={onUserPersonaChange} />
-                    <TextField className={styles.chatSettingsSeparator} defaultValue={systemPersona} label="Persona sustava" onChange={onSystemPersonaChange} />
+                    <TextField className={styles.chatSettingsSeparator} defaultValue={userPersona} label={t("Chat.UserPersona")} onChange={onUserPersonaChange} />
+                    <TextField className={styles.chatSettingsSeparator} defaultValue={systemPersona} label={t("Chat.SystemPersona")} onChange={onSystemPersonaChange} />
                     <ResponseLengthButtonGroup className={styles.chatSettingsSeparator} onClick={onResponseLengthChange} defaultValue={responseLength} />
                     <ResponseTempButtonGroup className={styles.chatSettingsSeparator} onClick={onResponseTempChange} defaultValue={responseTemp} />
                     {activeChatMode != ChatMode.Ungrounded &&
@@ -700,12 +741,12 @@ const Chat = () => {
                 </Panel>
                 
                 <Panel
-                    headerText="Informacije o aplikaciji"
+                    headerText={t("Chat.InfoPanel")}
                     isOpen={isInfoPanelOpen}
                     isBlocking={false}
                     onDismiss={() => setIsInfoPanelOpen(false)}
                     closeButtonAriaLabel="Close"
-                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsInfoPanelOpen(false)}>Zatvori</DefaultButton>}
+                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsInfoPanelOpen(false)}>{t("Chat.Close")}</DefaultButton>}
                     isFooterAtBottom={true}                >
                     <div className={styles.resultspanel}>
                         <InfoContent />
