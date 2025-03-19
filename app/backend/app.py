@@ -793,47 +793,6 @@ async def get_translated_pdf(file_path: str):
 
     # return Response(content=translated_pdf_stream.getvalue(), media_type="application/pdf")
 
-@app.get("/translateText")
-async def translateText(request: Request):
-    """
-    Get the citation for a given file
-
-    Parameters:
-        request (Request): The HTTP request object
-
-    Returns:
-        dict: The citation results in JSON format
-    """
-
-    endpoint = os.getenv("ENDPOINT_URL", "https://infoasst-aoai-loiyk.openai.azure.com/") 
-    deployment = os.getenv("DEPLOYMENT_NAME", "gpt-4o")
-    subscription_key = os.getenv("AZURE_OPENAI_API_KEY", "413780a82efe4319a7a1e794f5a95182") 
-
-    client = AzureOpenAI(  
-            azure_endpoint=endpoint,  
-            api_key=subscription_key,  
-            api_version="2024-05-01-preview",
-        )
-    try:
-        text = "Ja sam ti jedan opasan tekst koji s oprezom treba prevesti!"
-
-        messages = [
-        {"role": "system", "content": "You are a professional translator."},
-        {"role": "user", "content": f"Translate the following text from Croatian to English while keeping the format:\n\n{text}"}]
-
-        completion = client.chat.completions.create(  
-            model=deployment,
-            messages=messages,
-        )
-
-
-        result = completion.to_json()
-        log.debug(f"result: {result}")
-        return result
-    except Exception as ex:
-        log.exception("Exception in /getcitation")
-        raise HTTPException(status_code=500, detail=str(ex)) from ex
-
 # Return APPLICATION_TITLE
 @app.get("/getApplicationTitle")
 async def get_application_title():
