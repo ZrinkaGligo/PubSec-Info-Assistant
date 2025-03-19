@@ -93,9 +93,14 @@ const Chat = () => {
             console.log(error);
         }
     }
+    useEffect(() => {fetchFeatureFlags()}, []);
 
     const handleLegalAssistantEntryClick = () => {
+        console.log("handleLegalAssistantEntryClick");
         setAssistentEntryPointVisible(false);
+        setIAEntryPointVisible(false);
+        console.log("isLAEntryPointVisible: ", isLAEntryPointVisible);
+        console.log("isIAEntryPointVisible: ", isIAEntryPointVisible);
     }
 
 
@@ -139,10 +144,12 @@ const Chat = () => {
                     aiPersona: "",
                     responseLength: responseLength,
                     responseTemp: responseTemp,
-                    selectedFolders: work_directory_combine,
-                    selectedTags: selectedTags.map(tag => tag.name).join(",")
+                    selectedFolders: selectedFolders.includes("selectAll") ? "All" : selectedFolders.length == 0 ? "All" : selectedFolders.join(","),
+                    selectedTags: selectedTags.map(tag => tag.name).join(","),
+                    language: localStorage.getItem("lang") ?? undefined
                 },
-                citation_lookup: approach == Approaches.CompareWebWithWork ? web_citation_lookup : approach == Approaches.CompareWorkWithWeb ? work_citation_lookup : {},
+                // citation_lookup: approach == Approaches.CompareWebWithWork ? web_citation_lookup : approach == Approaches.ReadRetrieveRead ? work_citation_lookup : {},
+                citation_lookup:  work_citation_lookup,
                 thought_chain: thought_chain
             };
 
@@ -289,9 +296,10 @@ const Chat = () => {
 
     useEffect(() => {fetchFeatureFlags()}, []);
     useEffect(() => chatMessageStreamEnd.current?.scrollIntoView({ behavior: "smooth" }), [isLoading]);
+    
     useEffect(() => {
-        console.log("IAEntryPointVisible: ", isIAEntryPointVisible);
-        console.log("LAEntryPointVisible: ", isLAEntryPointVisible);
+        console.log("IAEntryPointVisible UE: ", isIAEntryPointVisible);
+        console.log("LAEntryPointVisible UE: ", isLAEntryPointVisible);
     }, [isIAEntryPointVisible, isLAEntryPointVisible]); 
 
     useEffect(() => {
@@ -303,7 +311,7 @@ const Chat = () => {
             setAssistentEntryPointVisible(true);
         }
 
-      }, [location, isLAEntryPointVisible, isIAEntryPointVisible]); 
+      }, [location]); 
 
     const onRetrieveCountChange = (_ev?: React.SyntheticEvent<HTMLElement, Event>, newValue?: string) => {
         setRetrieveCount(parseInt(newValue || "5"));
@@ -322,13 +330,24 @@ const Chat = () => {
     };
 
     const onExampleClicked = (example: string) => {
-        makeApiRequest(example, defaultApproach, {}, {}, {});
+        if (isLAEntryPointVisible) {  
+            makeApiRequest(example, Approaches.ReadRetrieveRead, {}, {}, {});
+        }
+        else if (isIAEntryPointVisible) {
+            makeApiRequest(example, Approaches.OdlukeOdbora, {}, {}, {});
+        }
+        else 
+            makeApiRequest(example, defaultApproach, {}, {}, {});
+
     };
 
     const onShowCitation = (citation: string, citationSourceFile: string, citationSourceFilePageNumber: string, index: number) => {
         if (activeCitation === citation && activeAnalysisPanelTab === AnalysisPanelTabs.CitationTab && selectedAnswer === index) {
             setActiveAnalysisPanelTab(undefined);
         } else {
+
+            console.log("citation: ", citation);
+            console.log("citationSourceFile: ", citationSourceFile);
             setActiveCitation(citation);
             setActiveCitationSourceFile(citationSourceFile);
             setActiveCitationSourceFilePageNumber(citationSourceFilePageNumber);
@@ -489,10 +508,7 @@ const Chat = () => {
     
         let diplay_question = `Generiram sažetak dokumenta: ${files[0].file.name}`;
         makeApiRequest(`${content}. Mogu li dobiti sažetak ovog teksta?`, Approaches.DocumentSummary, {}, {}, {}, diplay_question);
-       
     };
-
-
     //Generiraj prijedlog odluke
     const handleDecisionProposal = async (text: string, files: any) => {
         let content = '';
@@ -551,8 +567,6 @@ const Chat = () => {
 
                                             <>
                                     </> 
-
-
                                             {(isLAEntryPointVisible) && <h1 className={styles.chatEmptyStateTitle}>{t("Chat.HeaderTextLA")}</h1>}
                                             {(isIAEntryPointVisible) && <h1 className={styles.chatEmptyStateTitle}>{t("Chat.HeaderTextIA")}</h1>}
                                         </>

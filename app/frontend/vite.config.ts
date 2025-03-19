@@ -14,7 +14,9 @@ export default defineConfig({
     server: {
         proxy: {
             "/ask": "http://localhost:5000",
-            "/chat": "http://localhost:5000"
+            "/chat": "http://localhost:5000",
+            "/get-file": "http://localhost:5000",
+            "/getcitation": "http://localhost:5000",
         }
     },
     css: {

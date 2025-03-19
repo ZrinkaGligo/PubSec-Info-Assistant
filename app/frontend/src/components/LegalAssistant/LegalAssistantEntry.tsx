@@ -13,13 +13,6 @@ export const LegalAssistantEntry = ({onLegalAssistantEntryClicked} : LegalAssist
                 <div className={styles.wrap}> 
                     <h1> {t("LegalAssistantEntry.LegalAssistant")}</h1>
                     <img src={legalAssistantIcon} alt="Description of image" className={styles.image} onClick={()=>onLegalAssistantEntryClicked('TEST')} />
-                    {/* <div className={styles.legalAssistantEntry} 
-                        onClick={()=>onLegalAssistantEntryClicked('TEST')}>
-                        <p className={styles.exampleText}>
-                            Generiranje sažetka dokumenata<br/>
-                            Generiranje prijedloga odluke
-                        </p>
-                    </div> */}
                 </div>
              </>
     )};

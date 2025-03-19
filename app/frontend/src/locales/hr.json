@@ -107,7 +107,25 @@
     "Answer.RelevantAuthorities":"Odluke nadležnih tijela",
     "Answer.GenerateDecisionProposal":"Generiraj prijedlog odluke",
     "Answer.DownloadDecision" : "Preuzmite prijedlog odluke",
-    "Answer.FollowUpQuestions" : "Naknadna pitanja:"
+    "Answer.FollowUpQuestions" : "Naknadna pitanja:",
+
+    "AnalysisPanel.Metapodaci":"Metapodaci",
+    "AnalysisPanel.Dokument" : "Dokument",
+    "AnalysisPanel.ImeDokumenta":"Ime dokumenta",
+    "AnalysisPanel.AdresaDokumenta":"Adresa dokumenta",
+    "AnalysisPanel.Naslov":"Naslov",
+    "AnalysisPanel.Odjeljak":"Odjeljak",
+    "AnalysisPanel.OdjeljakDokumenta":"Odjeljak dokumenta",
+    "AnalysisPanel.BrojStranica":"Broj stranica",
+    "AnalysisPanel.BrojTokena":"Broj tokena",
+    "AnalysisPanel.Sadrzaj":"Sadržaj",
+    "AnalysisPanel.Ucitavanje":"Učitavanje...",
+    "AnalysisPanel.CitatNijeOdabran":"Nije odabran nijedan citat. Molimo odaberite citat s popisa citata s lijeve strane.",
+    "AnalysisPanel.Citati":"Citati",
+    "AnalysisPanel.PrateciSadrzaj":"Prateći sadržaj",
+    "AnalysisPanel.ProcesRazmisljanja":"Proces razmišljanja",
+    "AnalysisPanel.IzvorniDokument":"Izvorni dokument",
+    "AnalysisPanel.PrijevodDokumenta":"Prijevod dokumenta"
 
 
 

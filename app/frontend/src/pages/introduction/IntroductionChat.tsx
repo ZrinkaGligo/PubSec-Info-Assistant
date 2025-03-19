@@ -36,7 +36,6 @@ const IntroductionChat = () => {
     const lastQuestionThoughtChainRef = useRef<{ [key: string]: string }>({});
     const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
-    const initialQuestion = "Dobar dan! Ja sam Finley! Kako se vi zovete?";
 
     const makeApiRequest = async (question: string, approach: Approaches, 
                                     work_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } },
@@ -74,7 +73,8 @@ const IntroductionChat = () => {
                         responseLength: responseLength,
                         responseTemp: responseTemp,
                         selectedFolders: "All",
-                        selectedTags: "",                    },
+                        selectedTags: "",     
+                        language: localStorage.getItem("lang") || "en"},
                     citation_lookup: approach == Approaches.CompareWebWithWork ? web_citation_lookup : approach == Approaches.CompareWorkWithWeb ? work_citation_lookup : {},
                     thought_chain: thought_chain
                 };
@@ -138,15 +138,7 @@ const IntroductionChat = () => {
         setInitQuestionVisible(false);
         console.log("After setting state:", initQuestionVisible);
     };
-    // useEffect(() => {
-    //     console.log("isFirstRedirect: ", location.state?.isFirstRedirect);
-    //     console.log("hasRun: ",hasRun);
-    //     if (location.state?.isFirstRedirect && !hasRun) {
-    //         console.log("Making API request");  
-    //         makeApiRequest("Dobar dan! Ja sam Finley! Kako se vi zovete?", defaultApproach, {}, {}, {});
-    //         setHasRun(true);
-    //     }
-    //   }, [location, hasRun]); // Re-run if location changes
+
     const { t } = useTranslation();
 
     return (

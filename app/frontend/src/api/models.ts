@@ -40,6 +40,7 @@ export type ChatRequestOverrides = {
     responseTemp?: number;
     selectedFolders?: string;
     selectedTags?: string;
+    language?: string;
 };
 
 export type ChatResponse = {

@@ -107,6 +107,26 @@
     "Answer.RelevantAuthorities":"Decisions of Relevant Authorities",
     "Answer.GenerateDecisionProposal":"Generate Decision Proposal",
     "Answer.DownloadDecision" : "Download the Proposed Decision",
-    "Answer.FollowUpQuestions" : "Follow up questions:"
+    "Answer.FollowUpQuestions" : "Follow up questions:",
+
+    "AnalysisPanel.Metapodaci":"Metadata",
+    "AnalysisPanel.Dokument" : "Document",
+    "AnalysisPanel.ImeDokumenta":"File Name",
+    "AnalysisPanel.AdresaDokumenta":"File URI",
+    "AnalysisPanel.Naslov":"Title",
+    "AnalysisPanel.Odjeljak":"Section",
+    "AnalysisPanel.OdjeljakDokumenta":"Document Section",
+    "AnalysisPanel.BrojStranica":"Page Number(s)",
+    "AnalysisPanel.BrojTokena":"Token Count",
+    "AnalysisPanel.Sadrzaj":"Content",
+    "AnalysisPanel.Ucitavanje":"Učitavanje...",
+    "AnalysisPanel.CitatNijeOdabran":"No active citation selected. Please select a citation from the citations list on the left.",
+    "AnalysisPanel.Citati":"Citation",
+    "AnalysisPanel.PrateciSadrzaj":"Supporting Content",
+    "AnalysisPanel.ProcesRazmisljanja":"Thought Process",
+    "AnalysisPanel.IzvorniDokument":"Original Document",
+    "AnalysisPanel.PrijevodDokumenta":"Translated Document"
+
+
 
 }

@@ -29,9 +29,9 @@ class IntroductionApproach(Approach):
     an completion (answer) with that prompt."""
 
     # """
-    SYSTEM_MESSAGE_CHAT_CONVERSATION = """ Ti si Azure OpenAI Completion sistem, koji se zove Finley. Tvoja persona je {systemPersona} a korisnička persona je {userPersona}.
-    
-    Obrati pozornost da je klijent pirat!
+    SYSTEM_MESSAGE_CHAT_CONVERSATION_HR = """ 
+    Ti si Azure OpenAI Completion sistem, koji se zove Finley. Tvoja persona je {systemPersona} a korisnička persona je {userPersona}.
+        
     Želiš se upoznati s korisnikom. Predstavi mu se u srdačnom tonu. 
     Trebaš saznati ime, tvrtku i poziciju u kojoj radi.
     Nakon toga pitaj korisnika da ti da svoju mail adresu kako bi mu mogao poslati ovu konverzaciju.
@@ -42,13 +42,25 @@ class IntroductionApproach(Approach):
     Nakon što ti korisnik kaže svoju mail adresu, reci mu da si ti AI asistent i da pomažeš u svim pitanjima oko dokumentacije u financijskim organizacijama.
     Pokaži mu da si ispravno zapamtio njegove podatke. Reci mu da te ispravi, ako si pogrešno zapamtio nešto.
 
-
-    
-
     {injected_prompt}
     """
 
+    SYSTEM_MESSAGE_CHAT_CONVERSATION = """ 
+    You are an Azure OpenAI Completion system, named Finley. Your persona is {systemPersona} and your user persona is {userPersona}.
+   
+    # Note that the client is a pirate!
+    You want to get to know the user. Introduce yourself to them in a friendly tone.
+    You need to find out their name, company, and position.
+    Then ask the user to give you their email address so you can send them this conversation.
 
+    After you get the email address, reformulate that response in the format:#@# Name:Zdravko, Company:Asee Solutions, Position:Director, Email:zdravko@gmail.com. #@#.
+    It is important that the format is as specified.
+
+    After the user gives you their email address, tell them that you are an AI assistant and that you help with all documentation issues in financial organizations.
+    Show them that you have remembered their information correctly. Tell them to correct you if you have remembered something incorrectly.
+
+    {injected_prompt}
+    """
     FOLLOW_UP_QUESTIONS_PROMPT_CONTENT = """ALWAYS generate three very brief unordered follow-up questions surrounded by triple chevrons (<<<Are there exclusions for prescriptions?>>>) that the user would likely ask next about their agencies data. 
     Surround each follow-up question with triple chevrons (<<<Are there exclusions for prescriptions?>>>). Try not to repeat questions that have already been asked.
     Only generate follow-up questions and do not generate any text before or after the follow-up questions, such as 'Next Questions'
@@ -62,17 +74,29 @@ class IntroductionApproach(Approach):
     Do not include any special characters like '+'.
     If you cannot generate a search query, return just the number 0.
     """
-
-    QUERY_PROMPT_FEW_SHOTS = [
+    QUERY_PROMPT_FEW_SHOTS_HR = [
         {'role': Approach.ASSISTANT, 'content': 'Dobar dan! Ja sam Finley. Kako se vi zovete?'},
         {'role' : Approach.USER, 'content' : 'Zdravko' },
         {'role' : Approach.ASSISTANT, 'content' : 'Drago mi je upoznati vas Zdravko! Kako se zove tvrtka u kojoj radite?'},
         {'role' : Approach.USER, 'content' : 'Asee Solutions' },
     ]
 
-    RESPONSE_PROMPT_FEW_SHOTS = [
+    RESPONSE_PROMPT_FEW_SHOTS_HR = [
         {'role': Approach.ASSISTANT, 'content': 'Dobar dan! Ja sam Finley. Kako se vi zovete?'},
         {"role": Approach.USER ,'content': 'Zdravko'},
+    ]
+
+
+    QUERY_PROMPT_FEW_SHOTS = [
+        {'role': Approach.ASSISTANT, 'content': 'Hello? I am Finley. What is your name?'},
+        {'role' : Approach.USER, 'content' : 'John' },
+        {'role' : Approach.ASSISTANT, 'content' : 'Nice to meet you John! What company do you work for?'},
+        {'role' : Approach.USER, 'content' : 'Asee Solutions' },
+    ]
+
+    RESPONSE_PROMPT_FEW_SHOTS = [
+        {'role': Approach.ASSISTANT, 'content': 'Hello? I am Finley. What is your name?'},
+        {"role": Approach.USER ,'content': 'John'},
     ]
 
     def __init__(
@@ -95,7 +119,8 @@ class IntroductionApproach(Approach):
         azure_ai_endpoint:str,
         azure_ai_location:str,
         azure_ai_token_provider:str,
-        use_semantic_reranker: bool
+        use_semantic_reranker: bool,
+        language: str = "en",
     ):
         self.search_client = search_client
         self.chatgpt_deployment = chatgpt_deployment
@@ -116,6 +141,7 @@ class IntroductionApproach(Approach):
         self.oai_endpoint=oai_endpoint
         self.embedding_service_url = enrichment_appservice_uri
         self.use_semantic_reranker=use_semantic_reranker
+        self.language = language
         
         openai.api_base = oai_endpoint
         openai.api_type = 'azure'
@@ -144,19 +170,23 @@ class IntroductionApproach(Approach):
         response_length = int(overrides.get("response_length") or 1024)
         folder_filter = overrides.get("selected_folders", "")
         tags_filter = overrides.get("selected_tags", "")
-
+        language = overrides.get("language", "")
         user_q = 'Generate search query for: ' + history[-1]["user"]
+        
         thought_chain["work_query"] = user_q
-
+        
         # Detect the language of the user's question
-        detectedlanguage = self.detect_language(user_q)
-
+        
+        self.query_term_language = language
+        
+        detectedlanguage = language #or self.detect_language(user_q)
         if detectedlanguage != self.target_translation_language:
             user_question = self.translate_response(user_q, self.target_translation_language)
         else:
             user_question = user_q
 
-        query_prompt=self.QUERY_PROMPT_TEMPLATE.format(query_term_language=self.query_term_language)
+        prompt_language = language #or self.query_term_language
+        query_prompt=self.QUERY_PROMPT_TEMPLATE.format(query_term_language=prompt_language)
 
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         messages = self.get_messages_from_history(
@@ -326,16 +356,28 @@ class IntroductionApproach(Approach):
         prompt_override = overrides.get("prompt_template")
 
         if prompt_override is None:
-            system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
-                query_term_language=self.query_term_language,
-                injected_prompt="",
-                follow_up_questions_prompt=follow_up_questions_prompt,
-                response_length_prompt=self.get_response_length_prompt_text(
-                    response_length
-                ),
-                userPersona=user_persona,
-                systemPersona=system_persona,
-            )
+            if language == "hr":
+                system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION_HR.format(
+                    query_term_language=self.query_term_language,
+                    injected_prompt="",
+                    follow_up_questions_prompt=follow_up_questions_prompt,
+                    response_length_prompt=self.get_response_length_prompt_text(
+                        response_length
+                    ),
+                    userPersona=user_persona,
+                    systemPersona=system_persona,
+                )
+            else:
+                system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
+                    query_term_language=self.query_term_language,
+                    injected_prompt="",
+                    follow_up_questions_prompt=follow_up_questions_prompt,
+                    response_length_prompt=self.get_response_length_prompt_text(
+                        response_length
+                    ),
+                    userPersona=user_persona,
+                    systemPersona=system_persona,
+                )
         elif prompt_override.startswith(">>>"):
             system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
                 query_term_language=self.query_term_language,
@@ -362,7 +404,19 @@ class IntroductionApproach(Approach):
             # STEP 3: Generate a contextual and content-specific answer using the search results and chat history.
             #Added conditional block to use different system messages for different models.
 
-            messages = self.get_messages_from_history(
+            if language == "hr":
+                messages = self.get_messages_from_history(
+                system_message,
+                # "Sources:\n" + content + "\n\n" + system_message,
+                self.model_name,
+                history,
+                # history[-1]["user"],
+                history[-1]["user"] + "Sources:\n" + content + "\n\n", # GPT 4 starts to degrade with long system messages. so moving sources here 
+                self.RESPONSE_PROMPT_FEW_SHOTS_HR,
+                max_tokens=self.chatgpt_token_limit
+            )
+            else:
+                messages = self.get_messages_from_history(
                 system_message,
                 # "Sources:\n" + content + "\n\n" + system_message,
                 self.model_name,
