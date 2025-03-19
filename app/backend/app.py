@@ -10,7 +10,10 @@ import os
 import json
 import urllib.parse
 import pandas as pd
-from openai import AzureOpenAI 
+import fitz
+import pdfplumber
+import openai
+from openai import AzureOpenAI
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, Form
@@ -384,7 +387,7 @@ chat_approaches = {
 }
 
 IS_READY = True
-def getFileFromBlobStorage(file_path: str):
+def get_file_from_blob_storage(file_path: str):
     container_name, blob_name = file_path.split('/', 1)
 
     # Download the blob to a local file
@@ -764,13 +767,16 @@ async def get_citation(request: Request):
 
 @app.post("/translate-pdf")
 async def get_translated_pdf(file_path: str):
-    originalFile = getFileFromBlobStorage(file_path)
-    return originalFile
+    original_file = get_file_from_blob_storage(file_path)
+    log.debug(f"original_file: {original_file}")
+    with pdfplumber.open(original_file) as pdf:
+        text_content = [page.extract_text() for page in pdf.pages]
+        log.debug(f"Text content: {text_content}")
+    return original_file
 
     # try:
     #     # json_body = await request.json()
     #     # citation = urllib.parse.unquote(json_body.get("citation"))    
-    #     citation = "VSRH/090216ba80ee7a7e.pdf/090216ba80ee7a7e-0.json"
     #     blob = blob_container.get_blob_client(citation).download_blob()
     #     decoded_text = blob.readall().decode()
     #     results = json.loads(decoded_text)
@@ -1089,9 +1095,9 @@ async def get_file(request: Request):
     """
     data = await request.json()
     file_path = data['path']
-    
-    originalFile = getFileFromBlobStorage(file_path)
-    return originalFile
+
+    original_file = get_file_from_blob_storage(file_path)
+    return original_file
 
 app.mount("/", StaticFiles(directory="static"), name="static")
 
