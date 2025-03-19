@@ -10,6 +10,7 @@ import os
 import json
 import urllib.parse
 import pandas as pd
+from openai import AzureOpenAI 
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, Form
@@ -383,7 +384,18 @@ chat_approaches = {
 }
 
 IS_READY = True
+def getFileFromBlobStorage(file_path: str):
+    container_name, blob_name = file_path.split('/', 1)
 
+    # Download the blob to a local file
+    
+    citation_blob_client = blob_upload_container_client.get_blob_client(blob=blob_name)
+    stream = citation_blob_client.download_blob().chunks()
+    blob_properties = citation_blob_client.get_blob_properties()
+
+    return StreamingResponse(stream,
+                             media_type=blob_properties.content_settings.content_type, 
+                             headers={"Content-Disposition": f"inline; filename={blob_name}"})
 # Create API
 app = FastAPI(
     title="IA Web API",
@@ -741,6 +753,7 @@ async def get_citation(request: Request):
     try:
         json_body = await request.json()
         citation = urllib.parse.unquote(json_body.get("citation"))    
+        log.debug(f"citation: {citation}")
         blob = blob_container.get_blob_client(citation).download_blob()
         decoded_text = blob.readall().decode()
         results = json.loads(decoded_text)
@@ -748,6 +761,72 @@ async def get_citation(request: Request):
         log.exception("Exception in /getcitation")
         raise HTTPException(status_code=500, detail=str(ex)) from ex
     return results
+
+@app.post("/translate-pdf")
+async def get_translated_pdf(file_path: str):
+    originalFile = getFileFromBlobStorage(file_path)
+    return originalFile
+
+    # try:
+    #     # json_body = await request.json()
+    #     # citation = urllib.parse.unquote(json_body.get("citation"))    
+    #     citation = "VSRH/090216ba80ee7a7e.pdf/090216ba80ee7a7e-0.json"
+    #     blob = blob_container.get_blob_client(citation).download_blob()
+    #     decoded_text = blob.readall().decode()
+    #     results = json.loads(decoded_text)
+    #     log.debug(f"results: {results}")
+    # except Exception as ex:
+    #     log.exception("Exception in /getcitation")
+    #     raise HTTPException(status_code=500, detail=str(ex)) from ex
+    # return results
+
+
+    # original_text = extract_text_from_pdf(original_pdf_stream)
+    # translated_text = translate_text(original_text)
+    # translated_pdf_stream = save_translated_pdf(original_pdf_stream, translated_text)
+
+    # return Response(content=translated_pdf_stream.getvalue(), media_type="application/pdf")
+
+@app.get("/translateText")
+async def translateText(request: Request):
+    """
+    Get the citation for a given file
+
+    Parameters:
+        request (Request): The HTTP request object
+
+    Returns:
+        dict: The citation results in JSON format
+    """
+
+    endpoint = os.getenv("ENDPOINT_URL", "https://infoasst-aoai-loiyk.openai.azure.com/") 
+    deployment = os.getenv("DEPLOYMENT_NAME", "gpt-4o")
+    subscription_key = os.getenv("AZURE_OPENAI_API_KEY", "413780a82efe4319a7a1e794f5a95182") 
+
+    client = AzureOpenAI(  
+            azure_endpoint=endpoint,  
+            api_key=subscription_key,  
+            api_version="2024-05-01-preview",
+        )
+    try:
+        text = "Ja sam ti jedan opasan tekst koji s oprezom treba prevesti!"
+
+        messages = [
+        {"role": "system", "content": "You are a professional translator."},
+        {"role": "user", "content": f"Translate the following text from Croatian to English while keeping the format:\n\n{text}"}]
+
+        completion = client.chat.completions.create(  
+            model=deployment,
+            messages=messages,
+        )
+
+
+        result = completion.to_json()
+        log.debug(f"result: {result}")
+        return result
+    except Exception as ex:
+        log.exception("Exception in /getcitation")
+        raise HTTPException(status_code=500, detail=str(ex)) from ex
 
 # Return APPLICATION_TITLE
 @app.get("/getApplicationTitle")
@@ -999,21 +1078,20 @@ async def upload_file(
 
 @app.post("/get-file")
 async def get_file(request: Request):
+    """
+    Retrieve a file from Azure Blob Storage and return it as a streaming response.
+
+    Parameters:
+    - request: The HTTP request object.
+
+    Returns:
+    - A streaming response containing the requested file data.
+    """
     data = await request.json()
     file_path = data['path']
-
-    # Extract container name and blob name from the file path
-    container_name, blob_name = file_path.split('/', 1)
-
-    # Download the blob to a local file
     
-    citation_blob_client = blob_upload_container_client.get_blob_client(blob=blob_name)
-    stream = citation_blob_client.download_blob().chunks()
-    blob_properties = citation_blob_client.get_blob_properties()
-
-    return StreamingResponse(stream,
-                             media_type=blob_properties.content_settings.content_type, 
-                             headers={"Content-Disposition": f"inline; filename={blob_name}"})
+    originalFile = getFileFromBlobStorage(file_path)
+    return originalFile
 
 app.mount("/", StaticFiles(directory="static"), name="static")
 
