@@ -75,7 +75,7 @@
     "Content.HeaderText":"Upload Files",
 
     "Chat.HeaderTextIA": "Internal Acts - Digital Advisor",
-    "Chat.HeaderTextLA": "Inquire about the decisions made by the Supreme Court of Croatia",
+    "Chat.HeaderTextLA": "Ask about Supreme Court of Croatia decisions",
     "Chat.AI":"Legal AI is driven by artificial intelligence.",
     "Chat.AskQuestion":"Ask your question or explore the examples",
     "Chat.Close":"Close",
@@ -108,6 +108,7 @@
     "Answer.GenerateDecisionProposal":"Generate Decision Proposal",
     "Answer.DownloadDecision" : "Download the Proposed Decision",
     "Answer.FollowUpQuestions" : "Follow up questions:",
+    "Answer.ChooseOption" : "Choose one of the scenarios to discover everything I can do:",
 
     "AnalysisPanel.Metapodaci":"Metadata",
     "AnalysisPanel.Dokument" : "Document",

@@ -325,6 +325,7 @@ export const Answer = ({
             {(parsedAnswer.approach == Approaches.Introduction && !!parsedAnswer.answerHtml.length && isFinal(parsedAnswer.answerHtml)) && (
                 <div className={styles.downloadFileContainer}>
                     <Stack.Item>
+                        <div className={styles.optionLabelStyle}>{t("Answer.ChooseOption")}</div>
                         <Stack horizontal wrap tokens={{ childrenGap: 2 }} className={styles.downloadFileBtnContainer}>
                             <div className={styles.downloadFile} onClick={() => onInterniAkti && onInterniAkti(parsedAnswer.answerHtml)}> {t("Answer.InternalActs")}</div>
                             <div className={styles.downloadFile} onClick={() => onSudskeOdlukeClicked && onSudskeOdlukeClicked(parsedAnswer.answerHtml)}>{t("Answer.RelevantAuthorities")}</div>
@@ -345,7 +346,7 @@ export const Answer = ({
             {(parsedAnswer.approach == Approaches.DocumentSummary && !!parsedAnswer.work_citations.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <div className={styles.downloadFile} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> {t("Answer.GenerateDecisionProposal")} </div>
+                        <div className={styles.downloadFileLA} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> {t("Answer.GenerateDecisionProposal")} </div>
                     </Stack>
                 </Stack.Item>
             )}
@@ -353,7 +354,7 @@ export const Answer = ({
             {(parsedAnswer.approach == Approaches.DecisionProposal && !!parsedAnswer.work_citations.length) && (
                 <Stack.Item>
                     <Stack horizontal wrap tokens={{ childrenGap: 5 }}>
-                        <div className={styles.downloadFile} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> {t("Answer.DownloadDecision")} </div>
+                        <div className={styles.downloadFileLA} onClick={() => onDownloadClick(parsedAnswer.answerHtml)}> {t("Answer.DownloadDecision")} </div>
                     </Stack>
                 </Stack.Item>
             )}

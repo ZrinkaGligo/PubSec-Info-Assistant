@@ -34,6 +34,9 @@ import { LegalAssistantEntry } from "../../components/LegalAssistant/LegalAssist
 import {LegalAssistant} from "../../components/LegalAssistant/LegalAssistant";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
+import InternalActsIcon from '../../assets/interni-akti.svg';
+import LegalAiIcon from '../../assets/legal-AI.svg';
+
 
 const Chat = () => {
     const { t } = useTranslation();
@@ -559,8 +562,8 @@ const Chat = () => {
                                         <>
                                             <div className={styles.chatEmptyStateHeader}> 
                                                 <>
-                                                    {isLAEntryPointVisible && <BuildingMultipleFilled fontSize={"100px"} primaryFill={"rgb(71, 71, 71)"} aria-hidden="true" aria-label="Chat with your Work Data logo" />}
-                                                    {isIAEntryPointVisible && <DocumentBulletListFilled fontSize={"100px"} primaryFill={"rgb(71, 71, 71)"} aria-hidden="true" aria-label="Work Data" />}
+                                                    {isLAEntryPointVisible &&  <img src={LegalAiIcon} alt="Legal AI" className={styles.iconStyle}/>}
+                                                    {isIAEntryPointVisible &&  <img src={InternalActsIcon} alt="Internal Acts" className={styles.iconStyle}/>}
                                                 </>
                                             </div>
 

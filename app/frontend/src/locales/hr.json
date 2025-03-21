@@ -108,6 +108,7 @@
     "Answer.GenerateDecisionProposal":"Generiraj prijedlog odluke",
     "Answer.DownloadDecision" : "Preuzmite prijedlog odluke",
     "Answer.FollowUpQuestions" : "Naknadna pitanja:",
+    "Answer.ChooseOption" : "Odaberite jedan od scenarija u kojima ćete vidjeti što sve mogu:",
 
     "AnalysisPanel.Metapodaci":"Metapodaci",
     "AnalysisPanel.Dokument" : "Dokument",

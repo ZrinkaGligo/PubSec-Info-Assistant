@@ -23,7 +23,7 @@ export const AnswerIcon: React.FC<AnswerIconProps> = ({ approach }) => {
             return <div className={styles.answerIntroduction}><img src={FinleyIcon} alt="Description of image" className={styles.finlyIcon}/></div>;
         }
     else if (approach == Approaches.ReadRetrieveRead || approach == Approaches.DocumentSummary || approach == Approaches.DecisionProposal) {
-        return <div className={styles.answerLogoWork}><BuildingMultiple24Filled primaryFill={"rgba(27, 74, 239, 1)"} aria-hidden="true" aria-label="Work Answer logo" /> {t("AnswerIcon.Work")}</div>;
+        return <div className={styles.answerLogoWork}><BuildingMultiple24Filled primaryFill={"rgba(0, 102, 204,1)"} aria-hidden="true" aria-label="Work Answer logo" /> {t("AnswerIcon.Work")}</div>;
         }
     else if (approach == Approaches.CompareWebWithWork) {
         return <div className={styles.answerLogoCompare}><Globe24Filled primaryFill={"rgba(206, 123, 46, 1)"} aria-hidden="true" aria-label="Web Compared to Work Answer Logo" />
