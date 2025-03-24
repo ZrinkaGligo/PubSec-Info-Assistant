@@ -7,18 +7,20 @@ from datetime import datetime
 import asyncio
 import logging
 import os
+import io
 import json
 import urllib.parse
 import pandas as pd
 import fitz
 import pdfplumber
 import openai
-from openai import AzureOpenAI
-from pydantic import BaseModel
+import tempfile
+from openai import  AsyncAzureOpenAI
+from docx import Document
+from PIL import Image
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, Form
 from fastapi.responses import RedirectResponse, StreamingResponse
-import openai
 from approaches.introduction_approcach import IntroductionApproach
 from approaches.credit_approval_approach import CreditApprovalApproach
 from approaches.odluke_odbora_approach import OdlukeOdboraApproach
@@ -34,6 +36,8 @@ from azure.identity import ManagedIdentityCredential, AzureAuthorityHosts, Defau
 from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient, ContentSettings
+from pdf2docx import Converter
+from pydantic import BaseModel
 from approaches.mathassistant import(
     generate_response,
     process_agent_response,
@@ -166,6 +170,11 @@ search_client = SearchClient(
     credential=azure_credential,
     audience=ENV["AZURE_SEARCH_AUDIENCE"]
 )
+
+client = AsyncAzureOpenAI(
+        azure_endpoint = ENV["AZURE_OPENAI_ENDPOINT"],
+        azure_ad_token_provider=token_provider,
+        api_version=openai.api_version)
 
 blob_client = BlobServiceClient(
     account_url=ENV["AZURE_BLOB_STORAGE_ENDPOINT"],
@@ -399,6 +408,11 @@ def get_file_from_blob_storage(file_path: str):
     return StreamingResponse(stream,
                              media_type=blob_properties.content_settings.content_type, 
                              headers={"Content-Disposition": f"inline; filename={blob_name}"})
+class TranslateRequest(BaseModel):
+    text: str
+    source_language: str
+    target_language: str
+
 # Create API
 app = FastAPI(
     title="IA Web API",
@@ -765,33 +779,180 @@ async def get_citation(request: Request):
         raise HTTPException(status_code=500, detail=str(ex)) from ex
     return results
 
+async def extract_text_from_streaming_response(pdf_file):
+    text = ""
+    # Open PDF with pdfplumber and extract text
+    with pdfplumber.open(pdf_file) as pdf:
+        text += "\n".join([page.extract_text() for page in pdf.pages if page.extract_text()])
+
+    return text
+
+async def translate_text_gpt(text, sourceLanguage, targetLanguage):
+    messages = [
+        {"role": "system", "content": "You are a professional translator."},
+        {"role": "user", "content": f"Translate the following text from ${sourceLanguage} to ${targetLanguage} while keeping the format:\n\n{text}"}
+    ]
+    try:
+        chat_completion= await client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=messages,
+                temperature=0.0,
+                # max_tokens=32, # setting it too low may cause malformed JSON
+                max_tokens=1000,
+            n=1)
+    except Exception as e:
+        log.error(f"Error generating optimized keyword search: {str(e)}")
+
+    return chat_completion.choices[0].message.content
+
+async def save_translated_pdf(pdf_file, translated_text):
+    doc = fitz.open(stream=pdf_file.getvalue(), filetype="pdf")
+    output_pdf = fitz.open()
+
+    translated_lines = translated_text.split("\n")
+    log.debug("translated_lines: %s", translated_lines)
+    
+    line_index = 0
+
+    for page in doc:
+        # Create a new page with the same dimensions
+        new_page = output_pdf.new_page(width=page.rect.width, height=page.rect.height)
+
+        # Copy the entire page content (images, graphics, text)
+        new_page.show_pdf_page(new_page.rect, doc, page.number)
+
+        # Overlay translated text
+        text_blocks = page.get_text("blocks")
+        for block in text_blocks:
+            if block[4].strip() and line_index < len(translated_lines):
+                rect = fitz.Rect(block[0], block[1], block[2], block[3])
+                new_page.insert_textbox(rect, translated_lines[line_index], fontsize=10)
+                line_index += 1
+
+    output_stream = io.BytesIO()
+    output_pdf.save(output_stream)
+    output_stream.seek(0)
+
+    return StreamingResponse(
+        content=output_stream,
+        media_type="application/pdf",
+        headers={"Content-Disposition": "attachment; filename=translated_output.pdf"}
+    )
+
+async def get_pdf_stream(file_stream: StreamingResponse):
+    file_bytes = b"".join([chunk async for chunk in file_stream.body_iterator])
+    pdf_file = io.BytesIO(file_bytes)
+    return pdf_file
+
+
+def mock_translate(text: str) -> str:
+    translations = {
+        "Hello": "Hola",
+        "How are you?": "¿Cómo estás?",
+        "Goodbye": "Adiós"
+    }
+    return translations.get(text, f"Translated({text})")
+
+
+@app.post("/translate_text")
+async def translate_text(request: TranslateRequest):
+    if not request.text:
+        raise HTTPException(status_code=400, detail="Text is required")
+    translated_text = await translate_text_gpt(request.text, request.source_language, request.target_language)
+    return {"translatedText": translated_text}
+
 @app.post("/translate-pdf")
 async def get_translated_pdf(file_path: str):
     original_file = get_file_from_blob_storage(file_path)
-    log.debug(f"original_file: {original_file}")
-    with pdfplumber.open(original_file) as pdf:
-        text_content = [page.extract_text() for page in pdf.pages]
-        log.debug(f"Text content: {text_content}")
-    return original_file
+    original_file_copy = get_file_from_blob_storage(file_path)
 
-    # try:
-    #     # json_body = await request.json()
-    #     # citation = urllib.parse.unquote(json_body.get("citation"))    
-    #     blob = blob_container.get_blob_client(citation).download_blob()
-    #     decoded_text = blob.readall().decode()
-    #     results = json.loads(decoded_text)
-    #     log.debug(f"results: {results}")
-    # except Exception as ex:
-    #     log.exception("Exception in /getcitation")
-    #     raise HTTPException(status_code=500, detail=str(ex)) from ex
-    # return results
+    pdf_stream = await get_pdf_stream(original_file)
+    docx_stream = pdf_to_docx_stream(pdf_stream)
+    text_data = extract_text(docx_stream)
 
+    # text = await extract_text_from_streaming_response(pdf_stream)
+    text_translated = await translate_text(text_data)
+    translated_docx_stream = replace_text_in_docx(docx_stream, text_translated)
+    # translated_pdf_stream = docx_to_pdf_stream(translated_docx_stream)
+    
+    # log.debug(f"text: {text}")
+    # log.debug(f"text_translated: {text_translated}")
+    # output_file = await save_translated_pdf(pdf_stream, text_translated)
+    
+    return translated_docx_stream
 
-    # original_text = extract_text_from_pdf(original_pdf_stream)
-    # translated_text = translate_text(original_text)
-    # translated_pdf_stream = save_translated_pdf(original_pdf_stream, translated_text)
+def pdf_to_docx_stream(pdf_stream):
+    """ Convert PDF stream to Word stream """
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        temp_pdf.write(pdf_stream.read())
+        temp_pdf_path = temp_pdf.name
 
-    # return Response(content=translated_pdf_stream.getvalue(), media_type="application/pdf")
+    docx_path = temp_pdf_path.replace(".pdf", ".docx")
+    
+    cv = Converter(temp_pdf_path)
+    cv.convert(docx_path, start=0, end=None)
+    cv.close()
+
+    with open(docx_path, "rb") as docx_file:
+        docx_stream = io.BytesIO(docx_file.read())
+
+    os.remove(temp_pdf_path)
+    os.remove(docx_path)
+
+    return docx_stream
+
+    # return StreamingResponse(
+    #     content=docx_stream,
+    #     media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    #     headers={"Content-Disposition": "attachment; filename=converted_output.docx"})
+
+def extract_text(docx_stream):
+    """ Extract text from Word file while keeping structure """
+    doc = Document(docx_stream)
+    for para in doc.paragraphs:
+        print(f"Debug: {para.text}")
+    return [para.text for para in doc.paragraphs]
+
+def replace_text_in_docx(docx_stream, translated_texts):
+    """ Replace text in Word file while keeping formatting """
+    doc = Document(docx_stream)
+    i = 0
+    for para in doc.paragraphs:
+        if i < len(translated_texts):
+            para.text = translated_texts[i]
+            i += 1
+
+    translated_docx_stream = io.BytesIO()
+    doc.save(translated_docx_stream)
+    translated_docx_stream.seek(0)
+    
+    return StreamingResponse(
+        content=translated_docx_stream,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": "attachment; filename=translated_docx_stream.docx"})
+    # return translated_docx_stream
+
+# def docx_to_pdf_stream(docx_stream):
+#     """ Convert Word stream to PDF using LibreOffice (cross-platform) """
+#     with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_docx:
+#         temp_docx.write(docx_stream.read())
+#         temp_docx_path = temp_docx.name
+
+#     pdf_path = temp_docx_path.replace(".docx", ".pdf")
+
+#     # Convert using LibreOffice CLI
+#     command = f"soffice --headless --convert-to pdf {temp_docx_path} --outdir {os.path.dirname(pdf_path)}"
+#     subprocess.run(command, shell=True, check=True)
+
+#     # Read the converted PDF
+#     with open(pdf_path, "rb") as pdf_file:
+#         pdf_stream = BytesIO(pdf_file.read())
+
+#     # Cleanup temporary files
+#     os.remove(temp_docx_path)
+#     os.remove(pdf_path)
+
+#     return pdf_stream
 
 # Return APPLICATION_TITLE
 @app.get("/getApplicationTitle")

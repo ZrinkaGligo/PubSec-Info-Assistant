@@ -227,3 +227,7 @@ export type FetchCitationFileResponse = {
     file_blob: Blob;
     error?: string;
 }
+
+export type TranslationRequest = {
+    text: string
+}

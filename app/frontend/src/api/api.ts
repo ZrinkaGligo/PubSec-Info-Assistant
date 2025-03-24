@@ -20,6 +20,8 @@ import { ChatResponse,
     FetchCitationFileResponse,
     } from "./models";
 
+
+
 export async function chatApi(options: ChatRequest, signal: AbortSignal): Promise<Response> {
     const response = await fetch("/chat", {
         method: "POST",
@@ -491,6 +493,34 @@ export async function fetchCitationFile(filePath: string) : Promise<FetchCitatio
     const fileResponse : FetchCitationFileResponse = {file_blob : await response.blob()};
     return fileResponse;
 }
+
+export async function translateText(
+    text: string, 
+    sourceLanguage: string, 
+    targetLanguage: string) : Promise<string> {
+    
+    console.log("api.ts - translateText -", sourceLanguage, targetLanguage);
+    const response = await fetch(`/translate_text`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            text: text,
+            source_language: sourceLanguage,
+            target_language: targetLanguage
+        })
+    });
+    console.log("response.status", response.status);
+    if (response.status > 299 || !response.ok) {
+        console.log(response);
+        throw Error('Failed to fetch file' + response.statusText);
+    }
+    const data = await response.json(); // Parse response as JSON
+    return data.translatedText;
+}
+
+
 
 export async function fetchTranslatedFile(filePath: string) : Promise<FetchCitationFileResponse> {
     console.log("api.ts - fetchTranslatedFile -", filePath);
