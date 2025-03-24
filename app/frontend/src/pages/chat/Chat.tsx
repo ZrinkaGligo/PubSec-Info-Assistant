@@ -36,12 +36,15 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useLocation } from "react-router-dom";
 import InternalActsIcon from '../../assets/interni-akti.svg';
 import LegalAiIcon from '../../assets/legal-AI.svg';
+import { LegalDisclaimer } from "../../components/LegalDisclaimer/LegalDisclaimer";
+import { LegalDisclaimerButton } from "../../components/LegalDisclaimerButton/LegalDisclaimerButton";
 
 
 const Chat = () => {
     const { t } = useTranslation();
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [isInfoPanelOpen, setIsInfoPanelOpen] = useState(false);
+    const [isLegalDisclaimerOpen, setLegalDisclaimerOpen] = useState(false);
     const [retrieveCount, setRetrieveCount] = useState<number>(10);
     const location = useLocation();
     const [useSuggestFollowupQuestions, setUseSuggestFollowupQuestions] = useState<boolean>(true);
@@ -562,6 +565,7 @@ const Chat = () => {
                     <ClearChatButton className={styles.commandButton} onClick={clearChat} disabled={!lastQuestionRef.current || isLoading} />
                     <SettingsButton className={styles.commandButton} onClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)} />
                     <InfoButton className={styles.commandButton} onClick={() => setIsInfoPanelOpen(!isInfoPanelOpen)} />
+                    <LegalDisclaimerButton className={styles.commandButton} onClick={() => setLegalDisclaimerOpen(!isLegalDisclaimerOpen)} />
                 </div>
             </div>
             <div className={styles.chatRoot}>
@@ -781,6 +785,19 @@ const Chat = () => {
                     isFooterAtBottom={true}                >
                     <div className={styles.resultspanel}>
                         <InfoContent />
+                    </div>
+                </Panel>
+
+                <Panel
+                    headerText={t("LegalDisclaimer.Title")}
+                    isOpen={isLegalDisclaimerOpen}
+                    isBlocking={false}
+                    onDismiss={() => setLegalDisclaimerOpen(false)}
+                    closeButtonAriaLabel="Close"
+                    onRenderFooterContent={() => <DefaultButton onClick={() => setLegalDisclaimerOpen(false)}>{t("Chat.Close")}</DefaultButton>}
+                    isFooterAtBottom={true}                >
+                    <div className={styles.resultspanel}>
+                        <LegalDisclaimer />
                     </div>
                 </Panel>
             </div>

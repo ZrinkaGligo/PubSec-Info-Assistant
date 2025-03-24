@@ -91,6 +91,7 @@
     "Chat.DecisionDisplayMessage_2" : "i ostalih sličnih dokumenata u sustavu.",
     "Chat.DecisionRequest" : "Generiraj mi prijedlog odluke na tužbu:",
     "Chat.FilterResults" : "Filtriraj rezultate po:",
+    "Chat.LegalDisclaimer": "Izvor podataka",
 
     "LegalAssistant.DecisionProposalGeneration": "Generiranje prijedloga odluke",
     "LegalAssistant.SummaryGeneration" : "Generiranje sažetka dokumenata",
@@ -169,7 +170,15 @@
     "InfoContent.NazivUsluge":"Naziv usluge",
     "InfoContent.NazivIndeksa":"Naziv indeksa",
     "InfoContent.Konfiguracija":"Konfiguracija",
-    "InfoContent.JezikSustava":"Jezik sustava"
+    "InfoContent.JezikSustava":"Jezik sustava", 
+
+    "LegalDisclaimer.Disclaimer": "Svi dokumenti korišteni u ovoj aplikaciji prikupljeni su isključivo s javno dostupnih izvora",
+    "LegalDisclaimer.Title": "Pravna obavijest",
+    "LegalDisclaimer.InterniAkti":"Interni akti",
+    "LegalDisclaimer.VSRH":"Vrhovni sud Republike Hrvatske",
+    "LegalDisclaimer.VSRHOpis":"Sve presude korištene u ovoj aplikaciji dostupne su na sljedećem linku:"
+
+    
 
 
 

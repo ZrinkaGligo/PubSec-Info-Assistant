@@ -91,6 +91,7 @@
     "Chat.DecisionDisplayMessage_2" : "and other similar documents in the system.",
     "Chat.DecisionRequest" : "Generate a decision proposal for the lawsuit:",
     "Chat.FilterResults" : "Filter results by:",
+    "Chat.LegalDisclaimer": "AI-generirani sadržaj može biti netočan",
 
     "LegalAssistant.DecisionProposalGeneration": "Decision proposal generation",
     "LegalAssistant.SummaryGeneration" : "Document summarization",
@@ -169,7 +170,18 @@
     "InfoContent.NazivUsluge":"Service Name",
     "InfoContent.NazivIndeksa":"Index Name",
     "InfoContent.Konfiguracija":"System Configuration",
-    "InfoContent.JezikSustava":"System Language"
+    "InfoContent.JezikSustava":"System Language",
+
+    "LegalDisclaimer.Disclaimer": "All documents displayed in this application are collected exclusively from publicly available websites",
+    "LegalDisclaimer.Title": "Legal Disclaimer",
+    "LegalDisclaimer.InterniAkti":"Internal acts",
+    "LegalDisclaimer.VSRH":"Supreme Court of Croatia",
+    "LegalDisclaimer.VSRHOpis":"All court rulings used in this application are available at the following link"
+
+
+
+
+
 
 
 
