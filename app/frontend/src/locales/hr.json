@@ -9,6 +9,7 @@
     "Layout.Razgovor": "Razgovor",
     "Layout.Sadrzaj": "Upravljanje sadržajem",
     "Question.Input.UpisitePitanje": "Upišite pitanje",
+    "Question.Input.OcistiRazgovor": "Očisti razgovor",
     "RAIPanel.PonovoOdgovori": "Ponovo odgovori",
     "Prilagodi": "Prilagodi",
     "Cancel":"Odustani",
@@ -85,6 +86,10 @@
     "Chat.FollowUpQuestions":"Predloži dodatna pitanja",
     "Chat.RetrieveCount":"Dohvati ovoliko dokumenata iz pretrage:",
     "Chat.ConfigPanel":"Postavke generiranja odgovora",
+    "Chat.GeneratingSummary-Display" : "Generiram sažetak dokumenta: ",
+    "Chat.DecisionDisplayMessage_1" : "Generiram prijedlog odluke na temelju učitanog dokumenta:",
+    "Chat.DecisionDisplayMessage_2" : "i ostalih sličnih dokumenata u sustavu.",
+    "Chat.DecisionRequest" : "Generiraj mi prijedlog odluke na tužbu:",
 
     "LegalAssistant.DecisionProposalGeneration": "Generiranje prijedloga odluke",
     "LegalAssistant.SummaryGeneration" : "Generiranje sažetka dokumenata",
@@ -109,6 +114,9 @@
     "Answer.DownloadDecision" : "Preuzmite prijedlog odluke",
     "Answer.FollowUpQuestions" : "Naknadna pitanja:",
     "Answer.ChooseOption" : "Odaberite jedan od scenarija u kojima ćete vidjeti što sve mogu:",
+    "Answer.NameTemplate" : "Prijedlog odluke.docx",
+    "Answer.NameTemplateTranslated" : "Decision Proposal - translated.docx",
+    "Answer.TranslateDecision": "Preuzmite englesku verziju",
 
     "AnalysisPanel.Metapodaci":"Metapodaci",
     "AnalysisPanel.Dokument" : "Dokument",
