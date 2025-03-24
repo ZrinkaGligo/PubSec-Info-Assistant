@@ -509,8 +509,8 @@ const Chat = () => {
         let content = '';
         content = await GetText(files, content, readTextFromFile, readTextFromDocxFile);
     
-        let diplay_question = `Generiram sažetak dokumenta: ${files[0].file.name}`;
-        makeApiRequest(`${content}. Mogu li dobiti sažetak ovog teksta?`, Approaches.DocumentSummary, {}, {}, {}, diplay_question);
+        let diplay_question =  `${t("Chat.GeneratingSummary-Display")} ${files[0].file.name}`;
+        makeApiRequest(`${content}. Mogu li dobiti sažetak ovog teksta?`, Approaches.DocumentSummary, {}, {}, {}, "", diplay_question);
     };
     //Generiraj prijedlog odluke
     const handleDecisionProposal = async (text: string, files: any) => {
@@ -518,8 +518,8 @@ const Chat = () => {
     
         content = await GetText(files, content, readTextFromFile, readTextFromDocxFile);
     
-        let diplay_question = `Generiram prijedlog odluke na temelju učitanog dokumenta: ${files[0].file.name} i ostalih sličnih dokumenata u sustavu`;
-        makeApiRequest(`Generiraj mi prijedlog odluke na tužbu: ${content}`, Approaches.DecisionProposal, {}, {}, {}, diplay_question);
+        let diplay_question = `${t("Chat.DecisionDisplayMessage_1")} ${files[0].file.name} ${t("Chat.DecisionDisplayMessage_2")}`;
+        makeApiRequest(`${t("Chat.DecisionRequest")} ${content}`, Approaches.DecisionProposal, {}, {}, {}, "", diplay_question);
         
     };
     const handleLegalAssistantAction = (text: string, files: any) => {
@@ -538,7 +538,7 @@ const Chat = () => {
     const handleDecisionProposalClicked = (question: string, approach: Approaches, work_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } }, web_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } }, thought_chain: { [key: string]: string }) => {
         let diplay_question = `Generiram prijedlog odluke na temelju učitanog dokumenta i ostalih sličnih dokumenata u sustavu`;
         question= "Generiraj mi prijedlog odluke na tužbu: " + lastQuestionRef.current;
-        makeApiRequest(question, Approaches.DecisionProposal, work_citation_lookup, web_citation_lookup, thought_chain, diplay_question);
+        makeApiRequest(question, Approaches.DecisionProposal, work_citation_lookup, web_citation_lookup, thought_chain, "", diplay_question);
     };
 
     return (
@@ -612,7 +612,7 @@ const Chat = () => {
                                 
                             </div>
                         <div className={styles.legalEntryStyle}>
-                           <LegalAssistantEntry onLegalAssistantEntryClicked={handleLegalAssistantEntryClick}/>
+                           {isLAEntryPointVisible && <LegalAssistantEntry onLegalAssistantEntryClicked={handleLegalAssistantEntryClick}/>}
                         </div>
                         </div>
 
