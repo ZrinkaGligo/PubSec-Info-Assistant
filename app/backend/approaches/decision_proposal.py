@@ -59,7 +59,7 @@ class DecisionProposal(Approach):
 
 
     # """
-    SYSTEM_MESSAGE_CHAT_CONVERSATION = """ Ti si Azure OpenAI Completion sistem. Tvoja persona je {systemPersona} a korisnička persona je {userPersona}.
+    SYSTEM_MESSAGE_CHAT_CONVERSATION_HR = """ Ti si Azure OpenAI Completion sistem. Tvoja persona je {systemPersona} a korisnička persona je {userPersona}.
     
     Ulazni dokument je tužba. U izvornim dokumentima možeš pronaći presude.
     Generiraj mi prijedlog odluke za tužbu na temelju sličnih slučajeva iz izvornih dokumenata.
@@ -77,7 +77,26 @@ class DecisionProposal(Approach):
 
     {injected_prompt}
     """
+    SYSTEM_MESSAGE_CHAT_CONVERSATION = """ You are an Azure OpenAI Completion system. Your persona is {systemPersona}, and the user's persona is {userPersona}.
 
+    The input document is a lawsuit. You can find court rulings in the source documents.
+    Generate a proposed decision for the lawsuit based on similar cases from the source documents.
+
+    The proposed decision must resemble existing rulings in the source documents. It should include "IN THE NAME OF THE REPUBLIC OF CROATIA – DECISION," "HAS RULED," and "EXPLANATION."
+    The text format must resemble an official court decision with a title, header, and appropriate sections. Titles should be in bold.
+
+    Specific details, such as names, surnames, and case numbers, must be taken from the input lawsuit.
+    Do not include the names of the council members—leave a blank space for later entry.
+
+    At the end of the text, before the citations, leave space for the date and signature.
+
+    Provide citations from similar cases. If no similar cases are found, the document should state that no relevant cases were found.
+    Citations should be listed at the end of the document and not included in sections such as "Has Ruled" and "Explanation."
+
+    Use labels like [File1], [File2], etc., according to their order in the list.
+
+    {injected_prompt}
+    """
 
     FOLLOW_UP_QUESTIONS_PROMPT_CONTENT = """ALWAYS generate three very brief unordered follow-up questions surrounded by triple chevrons (<<<Are there exclusions for prescriptions?>>>) that the user would likely ask next about their agencies data. 
     Surround each follow-up question with triple chevrons (<<<Are there exclusions for prescriptions?>>>). Try not to repeat questions that have already been asked.
@@ -92,6 +111,11 @@ class DecisionProposal(Approach):
     Do not include any special characters like '+'.
     If you cannot generate a search query, return just the number 0.
     """
+
+    QUERY_PROMPT_FEW_SHOTS_HR = [
+        {'role' : Approach.USER, 'content' : 'Generiraj mi prijedlog odluke na temelju sličnih slučajevima u izvornim dokumentima' },
+        {'role' : Approach.ASSISTANT, 'content' : 'Pronađi slične slučajeve u izvorim dokumentima i kreiraj mi novi dokumenti na temelju pronađenih inofrmacija' }
+    ]
 
     QUERY_PROMPT_FEW_SHOTS = [
         {'role' : Approach.USER, 'content' : 'Generate a draft judgment based on similar cases in source documents.' },
@@ -172,6 +196,7 @@ class DecisionProposal(Approach):
         response_length = int(overrides.get("response_length") or 1024)
         folder_filter = overrides.get("selected_folders", "")
         tags_filter = overrides.get("selected_tags", "")
+        language = overrides.get("language", "")
 
         user_q = 'Generate search query for: ' + history[-1]["user"]
         thought_chain["work_query"] = user_q
@@ -179,20 +204,23 @@ class DecisionProposal(Approach):
         # Detect the language of the user's question
         detectedlanguage = self.detect_language(user_q)
 
-        if detectedlanguage != self.target_translation_language:
-            user_question = self.translate_response(user_q, self.target_translation_language)
+        if detectedlanguage != language:
+            user_question = self.translate_response(user_q, language)
         else:
             user_question = user_q
 
-        query_prompt=self.QUERY_PROMPT_TEMPLATE.format(query_term_language=self.query_term_language)
-
+        query_prompt=self.QUERY_PROMPT_TEMPLATE.format(query_term_language=language)
+        
+        prompt_few_shots = self.QUERY_PROMPT_FEW_SHOTS
+        if language == "hr":
+            prompt_few_shots = self.QUERY_PROMPT_FEW_SHOTS_HR
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         messages = self.get_messages_from_history(
             query_prompt,
             self.model_name,
             history,
             user_question,
-            self.QUERY_PROMPT_FEW_SHOTS,
+            prompt_few_shots,
             self.chatgpt_token_limit - len(user_question)
             )
 
@@ -353,8 +381,12 @@ class DecisionProposal(Approach):
         # Allow client to replace the entire prompt, or to inject into the existing prompt using >>>
         prompt_override = overrides.get("prompt_template")
 
+        system_message_conversation = self.SYSTEM_MESSAGE_CHAT_CONVERSATION
+        if language == "hr":
+            system_message_conversation = self.SYSTEM_MESSAGE_CHAT_CONVERSATION_HR
+
         if prompt_override is None:
-            system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
+            system_message = system_message_conversation.format(
                 query_term_language=self.query_term_language,
                 injected_prompt="",
                 follow_up_questions_prompt=follow_up_questions_prompt,
@@ -365,7 +397,7 @@ class DecisionProposal(Approach):
                 systemPersona=system_persona,
             )
         elif prompt_override.startswith(">>>"):
-            system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
+            system_message = system_message_conversation.format(
                 query_term_language=self.query_term_language,
                 injected_prompt=prompt_override[3:] + "\n ",
                 follow_up_questions_prompt=follow_up_questions_prompt,
@@ -376,7 +408,7 @@ class DecisionProposal(Approach):
                 systemPersona=system_persona,
             )
         else:
-            system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
+            system_message = system_message_conversation.format(
                 query_term_language=self.query_term_language,
                 follow_up_questions_prompt=follow_up_questions_prompt,
                 response_length_prompt=self.get_response_length_prompt_text(
