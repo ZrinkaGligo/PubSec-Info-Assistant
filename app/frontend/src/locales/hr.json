@@ -90,6 +90,7 @@
     "Chat.DecisionDisplayMessage_1" : "Generiram prijedlog odluke na temelju učitanog dokumenta:",
     "Chat.DecisionDisplayMessage_2" : "i ostalih sličnih dokumenata u sustavu.",
     "Chat.DecisionRequest" : "Generiraj mi prijedlog odluke na tužbu:",
+    "Chat.FilterResults" : "Filtriraj rezultate po:",
 
     "LegalAssistant.DecisionProposalGeneration": "Generiranje prijedloga odluke",
     "LegalAssistant.SummaryGeneration" : "Generiranje sažetka dokumenata",
@@ -134,8 +135,41 @@
     "AnalysisPanel.PrateciSadrzaj":"Prateći sadržaj",
     "AnalysisPanel.ProcesRazmisljanja":"Proces razmišljanja",
     "AnalysisPanel.IzvorniDokument":"Izvorni dokument",
-    "AnalysisPanel.PrijevodDokumenta":"Prijevod dokumenta"
+    "AnalysisPanel.PrijevodDokumenta":"Prijevod dokumenta",
 
+    "ResponseLengthButtonGroup.Sažeto":"Sažeto",
+    "ResponseLengthButtonGroup.Standardno":"Standardno",
+    "ResponseLengthButtonGroup.Detaljno":"Detaljno",
+    "ResponseLengthButtonGroup.DuljinaOdgovora":"Duljina odgovora:",
+
+    "ResponseTempButtonGroup.Kreativno" : "Kreativno",
+    "ResponseTempButtonGroup.Balansirano" : "Balansirano",      
+    "ResponseTempButtonGroup.Precizno" : "Precizno",
+    "ResponseTempButtonGroup.NacinRazgovora":"Način razgovora",
+
+    "FolderPicker.OdabirMape" : "Odabir mape",
+    "FolderPicker.OdabirMapeMultiple" : "Odabir mape (Višestruki odabir mapa)",
+    "FolderPicker.TargetDirectory" : "Odaberite mapu za prijenos dokumenata",
+    "FolderPicker.TargetDirectoryMultiple" : "Odaberite mapu po kojoj će se filtrirati pretraga",
+    "FolderPicker.NewDirectory" : "Kreiraj novu mapu",
+    "FolderPicker.DirectoryName" : "Naziv mape:",
+
+    "TagPicker.TagsPerDocument":"Oznake koje će se pridužiti svakom dokumentu.",
+    "TagPicker.TagsFilterDocument" : "Oznake po kojima se filtriraju dokumenti.",
+    "TagPicker.Tags": "Oznake",
+
+    "InfoContent.Verzija":"Verzija",
+    "InfoContent.AzureOpenAI":"Azure OpenAI",
+    "InfoContent.Instanca":"Instanca",
+    "InfoContent.NazivGPTImplementacije":"Naziv GPT implementacije",
+    "InfoContent.NazivGPTModela":"Naziv GPT modela",
+    "InfoContent.VerzijaGPTModela":"Verzija GPT modela",
+    "InfoContent.UgradeniModeli":"Ugrađeni modeli",
+    "InfoContent.AzureAIPretraga":"Azure AI pretraga",
+    "InfoContent.NazivUsluge":"Naziv usluge",
+    "InfoContent.NazivIndeksa":"Naziv indeksa",
+    "InfoContent.Konfiguracija":"Konfiguracija",
+    "InfoContent.JezikSustava":"Jezik sustava"
 
 
 

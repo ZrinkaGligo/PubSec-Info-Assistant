@@ -21,16 +21,16 @@ const EXAMPLES_InterniAkti_EN: ExampleModel[] = [
     { text: "What are the main internal and regulatory requirements that a bank must meet when approving donations?", value: "What are the main internal and regulatory requirements that a bank must meet when approving donations?" }
 ];
 const EXAMPLES: ExampleModel[] = [
+    { text: "Kako se odluke Europskog suda primjenjuju u Hrvatskoj?", value: "Kako se odluke Europskog suda primjenjuju u Hrvatskoj?" },
     { text: "Molio bih primjere revizija odluka županijskih sudova", value: "Molio bih primjere revizija odluka županijskih sudova" },
-    { text: "Kako se određuje drugi nadležni sud u Hrvatskoj?", value: "Kako se određuje drugi nadležni sud u Hrvatskoj?" },
-    { text: "Kako se odluke Europskog suda primjenjuju u Hrvatskoj?", value: "Kako se odluke Europskog suda primjenjuju u Hrvatskoj?" }
+    { text: "Kako se određuje drugi nadležni sud u Hrvatskoj?", value: "Kako se određuje drugi nadležni sud u Hrvatskoj?" }
     
     
 ];
 const EXAMPLES_EN: ExampleModel[] = [
+    { text: "How are the decisions of the European Court applied in Croatia?", value: "How are the decisions of the European Court applied in Croatia?" },
     { text: "I would like examples of revisions of court decisions", value: "I would like examples of revisions of court decisions" },
-    { text: "How is the second competent court determined in Croatia?", value: "How is the second competent court determined in Croatia?" },
-    { text: "How are the decisions of the European Court applied in Croatia?", value: "How are the decisions of the European Court applied in Croatia?" }
+    { text: "How is the second competent court determined in Croatia?", value: "How is the second competent court determined in Croatia?" }
 ];
 
 const language = () => {

@@ -90,6 +90,7 @@
     "Chat.DecisionDisplayMessage_1" : "Generating decision proposal based on the uploaded document:",
     "Chat.DecisionDisplayMessage_2" : "and other similar documents in the system.",
     "Chat.DecisionRequest" : "Generate a decision proposal for the lawsuit:",
+    "Chat.FilterResults" : "Filter results by:",
 
     "LegalAssistant.DecisionProposalGeneration": "Decision proposal generation",
     "LegalAssistant.SummaryGeneration" : "Document summarization",
@@ -134,7 +135,42 @@
     "AnalysisPanel.PrateciSadrzaj":"Supporting Content",
     "AnalysisPanel.ProcesRazmisljanja":"Thought Process",
     "AnalysisPanel.IzvorniDokument":"Original Document",
-    "AnalysisPanel.PrijevodDokumenta":"Translated Document"
+    "AnalysisPanel.PrijevodDokumenta":"Translated Document",
+
+    "ResponseLengthButtonGroup.Sažeto":"Succinct",
+    "ResponseLengthButtonGroup.Standardno":"Standard",
+    "ResponseLengthButtonGroup.Detaljno":"Thorough",
+    "ResponseLengthButtonGroup.DuljinaOdgovora":"Response length:",
+
+    "ResponseTempButtonGroup.Kreativno" : "Creative",
+    "ResponseTempButtonGroup.Balansirano" : "Balanced",      
+    "ResponseTempButtonGroup.Precizno" : "Precise",
+    "ResponseTempButtonGroup.NacinRazgovora":"Conversation Type",
+
+    "FolderPicker.OdabirMape" : "Folder Selection",
+    "FolderPicker.OdabirMapeMultiple" : "Folder Selection (Select multiple folders)",
+    "FolderPicker.TargetDirectory" : "Select a folder to upload documents into",
+    "FolderPicker.TargetDirectoryMultiple" : "Select a folder to filter the search by",
+    "FolderPicker.NewDirectory" : "Create new folder",
+    "FolderPicker.DirectoryName" : "Folder Name:",
+
+    "TagPicker.TagsPerDocument":"Tags to append to each document uploaded below.",
+    "TagPicker.TagsFilterDocument" : "Tags to filter documents by",
+    "TagPicker.Tags": "Tags",
+
+    "InfoContent.Verzija":"Build and Version",
+    "InfoContent.AzureOpenAI":"Azure OpenAI",
+    "InfoContent.Instanca":"Instance",
+    "InfoContent.NazivGPTImplementacije":"GPT Deployment Name",
+    "InfoContent.NazivGPTModela":"GPT Model Name",
+    "InfoContent.VerzijaGPTModela":"GPT Model Version",
+    "InfoContent.UgradeniModeli":"Open Source Embeddings",
+    "InfoContent.AzureAIPretraga":"Azure AI Search",
+    "InfoContent.NazivUsluge":"Service Name",
+    "InfoContent.NazivIndeksa":"Index Name",
+    "InfoContent.Konfiguracija":"System Configuration",
+    "InfoContent.JezikSustava":"System Language"
+
 
 
 

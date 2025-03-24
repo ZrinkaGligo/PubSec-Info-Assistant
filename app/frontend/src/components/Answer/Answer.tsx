@@ -78,13 +78,13 @@ export const Answer = ({
         return paragraphs;
     }
 
-    const getFirstNCitattiLines = (answerHtml: string, keyword: string = "CITATI"): string[] => {
+    const getFirstNCitattiLines = (answerHtml: string, keywords: string[] = ["CITATI", "CITATIONS"]): string[] => {
         // Razdvajamo tekst na linije
         const lines = answerHtml.split("\n");
 
-        // Tražimo liniju u kojoj prvi put pojavi ključna riječ "CITATI"
-        const index = lines.findIndex(line => line.toLowerCase().includes(keyword.toLowerCase()));
-
+        const index = lines.findIndex(line => 
+            keywords.some(keyword => line.toLowerCase().includes(keyword.toLowerCase()))
+        );
         // Ako ključna riječ nije pronađena, vratit ćemo sve linije
         if (index === -1) {
             return lines;
@@ -213,7 +213,7 @@ export const Answer = ({
         document.body.style.cursor = "wait";
 
         // Split the text into lines
-        const lines = getFirstNCitattiLines(answerHtml, "CITATI SLIČNIH SLUČAJEVA");
+        const lines = getFirstNCitattiLines(answerHtml, ["CITATI","CITATIONS"]);
         const doc = createDocument(lines); 
 
         Packer.toBlob(doc).then((blob) => {
@@ -229,7 +229,7 @@ export const Answer = ({
         document.body.style.cursor = "wait";
 
         // Split the text into lines
-        const lines = getFirstNCitattiLines(answerHtml, "CITATI SLIČNIH SLUČAJEVA");
+        const lines = getFirstNCitattiLines(answerHtml, ["CITATI","CITATIONS"]);
         const text = lines.join("\n")
         const results = await translateText(text, "Croatian", "English");
         const translatedLines = results.split("\n");
@@ -311,7 +311,7 @@ export const Answer = ({
     }
 
     const isFinal = (answerHtml: string) => {
-        const final = answerHtml.includes("@");
+        const final = answerHtml.includes("isFinal:true");
         return final;       
     }
     const { t } = useTranslation();
@@ -392,7 +392,7 @@ export const Answer = ({
                 </Stack.Item>
 
             )}
-            {(parsedAnswer.approach == Approaches.Introduction && !!parsedAnswer.answerHtml.length && isFinal(parsedAnswer.answerHtml)) && (
+            {(parsedAnswer.approach == Approaches.Introduction && !!parsedAnswer.answerHtml.length && isFinal(answer.answer)) && (
                 <div className={styles.downloadFileContainer}>
                     <Stack.Item>
                         <div className={styles.optionLabelStyle}>{t("Answer.ChooseOption")}</div>

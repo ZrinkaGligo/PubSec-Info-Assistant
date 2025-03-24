@@ -217,7 +217,12 @@ export function parseAnswerToHtml(answer: string, approach: Approaches, work_cit
         });
     }
     if (approach == Approaches.GPTDirect || approach == Approaches.Introduction) {
-        fragments.push(parsedAnswer);
+        console.log("GPTDirect or Introduction approach");
+        console.log(parsedAnswer);
+        console.log("PARSED");
+        const parsedRegex = parsedAnswer.replace(/\bisFinal:true\b/g, "").trim();
+        console.log(parsedRegex);
+        fragments.push(parsedRegex);
     }
     
 

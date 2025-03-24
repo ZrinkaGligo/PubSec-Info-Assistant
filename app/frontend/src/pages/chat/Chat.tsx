@@ -86,7 +86,7 @@ const Chat = () => {
     const [isLAEntryPointVisible, setAssistentEntryPointVisible] = useState(true);
     const [isIAEntryPointVisible, setIAEntryPointVisible] = useState(true);
     const [fileHtmlDisplay, setFileHtmlDisplay] = useState("");
-
+    const [filterDirectory, setFilterDirectory] = useState<string>("All");
     async function fetchFeatureFlags() {
         try {
             const fetchedFeatureFlags = await getFeatureFlags();
@@ -111,7 +111,7 @@ const Chat = () => {
                                 work_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } },
                                 web_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } },
                                 thought_chain: { [key: string]: string },
-                                word_folder?: string,
+                                topic_directory?: string,
                                 display_question?: string) => {
         lastQuestionRef.current = question;
         lastQuestionWorkCitationRef.current = work_citation_lookup;
@@ -129,8 +129,8 @@ const Chat = () => {
 
         try {
             const display_question_text = display_question || question;
-            const work_directory_combine = word_folder || work_directory;
-            console.log("Directory: " + work_directory_combine);
+            const work_directory_combine = topic_directory || work_directory;
+            
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequest = {
                 history: [...history, { user: question, bot: undefined }],
@@ -147,7 +147,7 @@ const Chat = () => {
                     aiPersona: "",
                     responseLength: responseLength,
                     responseTemp: responseTemp,
-                    selectedFolders: selectedFolders.includes("selectAll") ? "All" : selectedFolders.length == 0 ? "All" : selectedFolders.join(","),
+                    selectedFolders: work_directory_combine,
                     selectedTags: selectedTags.map(tag => tag.name).join(","),
                     language: localStorage.getItem("lang") ?? undefined
                 },
@@ -303,17 +303,23 @@ const Chat = () => {
     useEffect(() => {
         console.log("IAEntryPointVisible UE: ", isIAEntryPointVisible);
         console.log("LAEntryPointVisible UE: ", isLAEntryPointVisible);
-    }, [isIAEntryPointVisible, isLAEntryPointVisible]); 
+        console.log("FilterDirectory: ", filterDirectory);
+    }, [isIAEntryPointVisible, isLAEntryPointVisible, filterDirectory]); 
 
     useEffect(() => {
         if (location.state?.source === "IA") {
             setIAEntryPointVisible(true);
             setAssistentEntryPointVisible(false);
+            setFilterDirectory("InternalActs");
+        } else if (location.state?.source === "LA") {
+            setIAEntryPointVisible(false);
+            setAssistentEntryPointVisible(true);
+            setFilterDirectory("VSRH");   
         } else {
             setIAEntryPointVisible(false);
             setAssistentEntryPointVisible(true);
+            setFilterDirectory("All");
         }
-
       }, [location]); 
 
     const onRetrieveCountChange = (_ev?: React.SyntheticEvent<HTMLElement, Event>, newValue?: string) => {
@@ -334,13 +340,17 @@ const Chat = () => {
 
     const onExampleClicked = (example: string) => {
         if (isLAEntryPointVisible) {  
-            makeApiRequest(example, Approaches.ReadRetrieveRead, {}, {}, {});
+            console.log("MakeApiRequest 1");
+            makeApiRequest(example, Approaches.ReadRetrieveRead, {}, {}, {}, "VSRH", "");
         }
         else if (isIAEntryPointVisible) {
-            makeApiRequest(example, Approaches.OdlukeOdbora, {}, {}, {});
+            console.log("MakeApiRequest 2");
+            makeApiRequest(example, Approaches.ReadRetrieveRead, {}, {}, {}, "InternalActs", "");
         }
         else 
+            console.log("MakeApiRequest 3");
             makeApiRequest(example, defaultApproach, {}, {}, {});
+            // makeApiRequest(`${content}. Mogu li dobiti sažetak ovog teksta?`, Approaches.DocumentSummary, {}, {}, {}, "", diplay_question);
 
     };
 
@@ -510,6 +520,7 @@ const Chat = () => {
         content = await GetText(files, content, readTextFromFile, readTextFromDocxFile);
     
         let diplay_question =  `${t("Chat.GeneratingSummary-Display")} ${files[0].file.name}`;
+            console.log("MakeApiRequest 4");
         makeApiRequest(`${content}. Mogu li dobiti sažetak ovog teksta?`, Approaches.DocumentSummary, {}, {}, {}, "", diplay_question);
     };
     //Generiraj prijedlog odluke
@@ -519,6 +530,7 @@ const Chat = () => {
         content = await GetText(files, content, readTextFromFile, readTextFromDocxFile);
     
         let diplay_question = `${t("Chat.DecisionDisplayMessage_1")} ${files[0].file.name} ${t("Chat.DecisionDisplayMessage_2")}`;
+            console.log("MakeApiRequest 5");
         makeApiRequest(`${t("Chat.DecisionRequest")} ${content}`, Approaches.DecisionProposal, {}, {}, {}, "", diplay_question);
         
     };
@@ -538,6 +550,7 @@ const Chat = () => {
     const handleDecisionProposalClicked = (question: string, approach: Approaches, work_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } }, web_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } }, thought_chain: { [key: string]: string }) => {
         let diplay_question = `Generiram prijedlog odluke na temelju učitanog dokumenta i ostalih sličnih dokumenata u sustavu`;
         question= "Generiraj mi prijedlog odluke na tužbu: " + lastQuestionRef.current;
+            console.log("MakeApiRequest 6");
         makeApiRequest(question, Approaches.DecisionProposal, work_citation_lookup, web_citation_lookup, thought_chain, "", diplay_question);
     };
 
@@ -653,7 +666,8 @@ const Chat = () => {
                                 <>
                                     <UserChatMessage message={lastQuestionRef.current} approach={activeApproach}/>
                                     <div className={styles.chatMessageGptMinWidth}>
-                                        <AnswerError error={error.toString()} onRetry={() => makeApiRequest(lastQuestionRef.current, activeApproach, lastQuestionWorkCitationRef.current, lastQuestionWebCitiationRef.current, lastQuestionThoughtChainRef.current)} />
+            console.log("MakeApiRequest 7");
+            <AnswerError error={error.toString()} onRetry={() => makeApiRequest(lastQuestionRef.current, activeApproach, lastQuestionWorkCitationRef.current, lastQuestionWebCitiationRef.current, lastQuestionThoughtChainRef.current)} />
                                     </div>
                                 </>
                             ) : null}
@@ -679,7 +693,7 @@ const Chat = () => {
                             clearOnSend
                             placeholder={t('Question.Input.UpisitePitanje')}
                             disabled={isLoading}
-                            onSend={question => makeApiRequest(question, defaultApproach, {}, {}, {})}
+                            onSend={question => makeApiRequest(question, defaultApproach, {}, {}, {}, filterDirectory, "")}
                             onAdjustClick={() => setIsConfigPanelOpen(!isConfigPanelOpen)}
                             onInfoClick={() => setIsInfoPanelOpen(!isInfoPanelOpen)}
                             showClearChat={true}
@@ -713,7 +727,7 @@ const Chat = () => {
                     isBlocking={false}
                     onDismiss={() => setIsConfigPanelOpen(false)}
                     closeButtonAriaLabel="Close"
-                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>Zatvori</DefaultButton>}
+                    onRenderFooterContent={() => <DefaultButton onClick={() => setIsConfigPanelOpen(false)}>{t("Chat.Close")}</DefaultButton>}
                     isFooterAtBottom={true}
                 >
                     {activeChatMode == ChatMode.WorkPlusWeb &&
@@ -750,7 +764,7 @@ const Chat = () => {
                     <ResponseTempButtonGroup className={styles.chatSettingsSeparator} onClick={onResponseTempChange} defaultValue={responseTemp} />
                     {activeChatMode != ChatMode.Ungrounded &&
                         <div>
-                            <Separator className={styles.chatSettingsSeparator}>Filtriraj rezultate po:</Separator>
+                            <Separator className={styles.chatSettingsSeparator}>{t("Chat.FilterResults")}</Separator>
                             <FolderPicker allowFolderCreation={false} onSelectedKeyChange={onSelectedKeyChanged} preSelectedKeys={selectedFolders} />
                             <TagPickerInline allowNewTags={false} onSelectedTagsChange={onSelectedTagsChange} preSelectedTags={selectedTags} />
                         </div>
