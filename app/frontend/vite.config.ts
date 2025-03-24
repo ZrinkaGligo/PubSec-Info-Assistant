@@ -17,6 +17,7 @@ export default defineConfig({
             "/chat": "http://localhost:5000",
             "/get-file": "http://localhost:5000",
             "/getcitation": "http://localhost:5000",
+            "/translate_text": "http://localhost:5000",
         }
     },
     css: {
