@@ -670,7 +670,6 @@ const Chat = () => {
                                 <>
                                     <UserChatMessage message={lastQuestionRef.current} approach={activeApproach}/>
                                     <div className={styles.chatMessageGptMinWidth}>
-            console.log("MakeApiRequest 7");
             <AnswerError error={error.toString()} onRetry={() => makeApiRequest(lastQuestionRef.current, activeApproach, lastQuestionWorkCitationRef.current, lastQuestionWebCitiationRef.current, lastQuestionThoughtChainRef.current)} />
                                     </div>
                                 </>

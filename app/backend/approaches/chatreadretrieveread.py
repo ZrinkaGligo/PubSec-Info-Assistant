@@ -73,7 +73,7 @@ class ChatReadRetrieveReadApproach(Approach):
     
     -Look for information in the source documents to answer the question in {query_term_language}.
     -If the source document has an answer, please respond with citation.You must include a citation to each document referenced only once when you find answer in source documents.      
-    -If you cannot find answer in below sources, respond with I am not sure.Do not provide personal opinions or assumptions and do not include citations.
+    -If you cannot find answer in below sources, respond with I am not sure. Do not provide personal opinions or assumptions and do not include citations.
     -Identify the language of the user's question and translate the final response to that language.if the final answer is " I am not sure" then also translate it to the language of the user's question and then display translated response only. nothing else.
 
     {follow_up_questions_prompt}
@@ -226,7 +226,7 @@ class ChatReadRetrieveReadApproach(Approach):
                     messages=messages,
                     temperature=0.0,
                     # max_tokens=32, # setting it too low may cause malformed JSON
-                    max_tokens=100,
+                    max_tokens=300,
                 n=1)
                 # Initialize a list to collect filter reasons
             filter_reasons = []

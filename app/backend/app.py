@@ -11,10 +11,9 @@ import io
 import json
 import urllib.parse
 import pandas as pd
-import fitz
 import pdfplumber
 import openai
-import tempfile
+# import tempfile
 from openai import  AsyncAzureOpenAI
 from docx import Document
 from PIL import Image
@@ -36,7 +35,7 @@ from azure.identity import ManagedIdentityCredential, AzureAuthorityHosts, Defau
 from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 from azure.search.documents import SearchClient
 from azure.storage.blob import BlobServiceClient, ContentSettings
-from pdf2docx import Converter
+# from pdf2docx import Converter
 from pydantic import BaseModel
 from approaches.mathassistant import(
     generate_response,
@@ -805,39 +804,6 @@ async def translate_text_gpt(text, sourceLanguage, targetLanguage):
 
     return chat_completion.choices[0].message.content
 
-async def save_translated_pdf(pdf_file, translated_text):
-    doc = fitz.open(stream=pdf_file.getvalue(), filetype="pdf")
-    output_pdf = fitz.open()
-
-    translated_lines = translated_text.split("\n")
-    log.debug("translated_lines: %s", translated_lines)
-    
-    line_index = 0
-
-    for page in doc:
-        # Create a new page with the same dimensions
-        new_page = output_pdf.new_page(width=page.rect.width, height=page.rect.height)
-
-        # Copy the entire page content (images, graphics, text)
-        new_page.show_pdf_page(new_page.rect, doc, page.number)
-
-        # Overlay translated text
-        text_blocks = page.get_text("blocks")
-        for block in text_blocks:
-            if block[4].strip() and line_index < len(translated_lines):
-                rect = fitz.Rect(block[0], block[1], block[2], block[3])
-                new_page.insert_textbox(rect, translated_lines[line_index], fontsize=10)
-                line_index += 1
-
-    output_stream = io.BytesIO()
-    output_pdf.save(output_stream)
-    output_stream.seek(0)
-
-    return StreamingResponse(
-        content=output_stream,
-        media_type="application/pdf",
-        headers={"Content-Disposition": "attachment; filename=translated_output.pdf"}
-    )
 
 async def get_pdf_stream(file_stream: StreamingResponse):
     file_bytes = b"".join([chunk async for chunk in file_stream.body_iterator])
@@ -864,42 +830,42 @@ async def translate_text(request: TranslateRequest):
 @app.post("/translate-pdf")
 async def get_translated_pdf(file_path: str):
     original_file = get_file_from_blob_storage(file_path)
-    original_file_copy = get_file_from_blob_storage(file_path)
+    # original_file_copy = get_file_from_blob_storage(file_path)
 
-    pdf_stream = await get_pdf_stream(original_file)
-    docx_stream = pdf_to_docx_stream(pdf_stream)
-    text_data = extract_text(docx_stream)
+    # pdf_stream = await get_pdf_stream(original_file)
+    # docx_stream = pdf_to_docx_stream(pdf_stream)
+    # text_data = extract_text(docx_stream)
 
-    # text = await extract_text_from_streaming_response(pdf_stream)
-    text_translated = await translate_text(text_data)
-    translated_docx_stream = replace_text_in_docx(docx_stream, text_translated)
-    # translated_pdf_stream = docx_to_pdf_stream(translated_docx_stream)
+    # # text = await extract_text_from_streaming_response(pdf_stream)
+    # text_translated = await translate_text(text_data)
+    # translated_docx_stream = replace_text_in_docx(docx_stream, text_translated)
+    # # translated_pdf_stream = docx_to_pdf_stream(translated_docx_stream)
     
     # log.debug(f"text: {text}")
     # log.debug(f"text_translated: {text_translated}")
     # output_file = await save_translated_pdf(pdf_stream, text_translated)
     
-    return translated_docx_stream
+    return original_file
 
-def pdf_to_docx_stream(pdf_stream):
-    """ Convert PDF stream to Word stream """
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
-        temp_pdf.write(pdf_stream.read())
-        temp_pdf_path = temp_pdf.name
+# def pdf_to_docx_stream(pdf_stream):
+#     """ Convert PDF stream to Word stream """
+#     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+#         temp_pdf.write(pdf_stream.read())
+#         temp_pdf_path = temp_pdf.name
 
-    docx_path = temp_pdf_path.replace(".pdf", ".docx")
+#     docx_path = temp_pdf_path.replace(".pdf", ".docx")
     
-    cv = Converter(temp_pdf_path)
-    cv.convert(docx_path, start=0, end=None)
-    cv.close()
+#     cv = Converter(temp_pdf_path)
+#     cv.convert(docx_path, start=0, end=None)
+#     cv.close()
 
-    with open(docx_path, "rb") as docx_file:
-        docx_stream = io.BytesIO(docx_file.read())
+#     with open(docx_path, "rb") as docx_file:
+#         docx_stream = io.BytesIO(docx_file.read())
 
-    os.remove(temp_pdf_path)
-    os.remove(docx_path)
+#     os.remove(temp_pdf_path)
+#     os.remove(docx_path)
 
-    return docx_stream
+#     return docx_stream
 
     # return StreamingResponse(
     #     content=docx_stream,

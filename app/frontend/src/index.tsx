@@ -18,7 +18,7 @@ import Content from "./pages/content/Content";
 import Tutor from "./pages/tutor/Tutor";
 import { Tda } from "./pages/tda/Tda";
 import { useEffect, useState } from "react";
-
+import { ToastContainer } from 'react-toastify';
 import './locales/i18n';
 import { useTranslation } from "react-i18next";
 
@@ -63,5 +63,15 @@ export default function App() {
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
         <App />
+        <ToastContainer 
+            position="top-center"
+            autoClose={3000} 
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover/>
     </React.StrictMode>
 );

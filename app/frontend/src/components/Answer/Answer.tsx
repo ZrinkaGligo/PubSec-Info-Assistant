@@ -4,6 +4,8 @@
 import { useMemo } from "react";
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, ImageRun } from "docx";
 import { saveAs } from "file-saver";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Add this declaration to extend the Window interface
 declare global {
@@ -216,9 +218,11 @@ export const Answer = ({
         const lines = getFirstNCitattiLines(answerHtml, ["CITATI","CITATIONS"]);
         const doc = createDocument(lines); 
 
+       
         Packer.toBlob(doc).then((blob) => {
             saveAs(blob, t("Answer.NameTemplate"));
             console.log("Prijedlog odluke uspješno preuzet");
+            toast.success(t("Answer.DownloadSuccess"));
         });
         document.body.style.cursor = "default";
 
@@ -250,6 +254,7 @@ export const Answer = ({
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             console.log("Prijedlog odluke uspješno preuzet");
+            toast.success(t("Answer.DownloadSuccess"));
         });
         console.log(results);
         document.body.style.cursor = "default";
@@ -259,7 +264,7 @@ export const Answer = ({
     const onTranslateClick = async (answerHtml: string) => {
 
         // Split the text into lines
-        const lines = getFirstNCitattiLines(answerHtml, "CITATI SLIČNIH SLUČAJEVA");
+        const lines = getFirstNCitattiLines(answerHtml, ["CITATI", "CITATIONS"]);
         const text = lines.join("\n")
         const results = await translateText(text, "Croatian", "English");
         const translatedLines = results.split("\n");

@@ -319,9 +319,9 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, sourceFile, p
                    {isOriginalDocumentVisible() && <PivotItem itemKey="izvorniDokument" headerText={t("AnalysisPanel.IzvorniDokument")}>
                         <iframe title={t("AnalysisPanel.IzvorniDokument")} srcDoc={htmlContent} style={{ backgroundColor: 'white' }} width="100%" height={citationHeight} />
                     </PivotItem>}
-                    <PivotItem itemKey="prijevodDokumenta" headerText={t("AnalysisPanel.PrijevodDokumenta")}>
+                    {/* <PivotItem itemKey="prijevodDokumenta" headerText={t("AnalysisPanel.PrijevodDokumenta")}>
                         <object data={getTranslatedDocument()} style={{ border: "none" }} width="100%" height={citationHeight} />
-                    </PivotItem>
+                    </PivotItem> */}
                     {/* http://localhost:5000/translate-pdf */}
                 </Pivot>
             </PivotItem>

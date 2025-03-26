@@ -119,6 +119,7 @@
     "Answer.NameTemplate" : "Decision Proposal.docx",
     "Answer.NameTemplateTranslated" : "Prijedlog odluke - prijevod.docx",
     "Answer.TranslateDecision": "Download Croatian Version",
+    "Answer.DownloadSuccess": "Download Successful",
 
     "AnalysisPanel.Metapodaci":"Metadata",
     "AnalysisPanel.Dokument" : "Document",
