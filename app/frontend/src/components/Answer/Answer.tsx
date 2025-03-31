@@ -299,7 +299,7 @@ export const Answer = ({
     };
     const onSudskeOdlukeClicked = (korisnikInfo: string) => {
         console.log(korisnikInfo);
-        saveConversationToLocal(korisnikInfo);
+        // saveConversationToLocal(korisnikInfo);
         setShowHeader(true);
         navigate("/Chat", { state: { isFirstRedirect: true, korisnikInfo: korisnikInfo, source: "LA" } });
 
@@ -307,7 +307,7 @@ export const Answer = ({
 
     const onInterniAkti = (korisnikInfo: string) => {
         setShowHeader(true);
-        saveConversationToLocal(korisnikInfo);
+        // saveConversationToLocal(korisnikInfo);
         navigate("/Chat", { state: { isFirstRedirect: true, korisnikInfo: korisnikInfo, source: "IA" } });
     }
 

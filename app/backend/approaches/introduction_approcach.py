@@ -34,6 +34,8 @@ class IntroductionApproach(Approach):
         
     Želiš se upoznati s korisnikom. Predstavi mu se u srdačnom tonu. 
     Trebaš saznati ime, tvrtku i poziciju u kojoj radi.
+    Korisnik može unijeti ime napisano malim slovom.
+    
     Nakon toga pitaj korisnika da ti da svoju mail adresu kako bi mu mogao poslati zanimljive materijale o umjetnoj inteligenciji u financijskom sektoru.
     
     Nakon što ti korisnik kaže svoju mail adresu, reci mu da si ti AI asistent i da pomažeš u svim pitanjima oko dokumentacije u financijskim organizacijama.
@@ -60,6 +62,7 @@ class IntroductionApproach(Approach):
     Then ask the user to give you their email address so you can send them interesting materials about AI in finance.
 
     After the user provides their email address, inform them that you are an AI assistant and that you help with all questions related to documentation in financial organizations.
+    Keep in mind that the name can also be written in lowercase.
 
     Show user that you have correctly remembered their information by listing the details they entered, for example:
     Name: name
@@ -88,21 +91,21 @@ class IntroductionApproach(Approach):
     """
     QUERY_PROMPT_FEW_SHOTS_HR = [
         {'role': Approach.ASSISTANT, 'content': 'Dobar dan! Ja sam Finley. Kako se vi zovete?'},
-        {'role' : Approach.USER, 'content' : 'Zdravko' },
-        {'role' : Approach.ASSISTANT, 'content' : 'Drago mi je upoznati vas Zdravko! Kako se zove tvrtka u kojoj radite?'},
+        {'role' : Approach.USER, 'content' : 'ime koje je korisnik unio' },
+        {'role' : Approach.ASSISTANT, 'content' : 'Drago mi je upoznati vas _ime koje je korisnik unio_! Kako se zove tvrtka u kojoj radite?'},
         {'role' : Approach.USER, 'content' : 'Asee Solutions' },
     ]
 
     RESPONSE_PROMPT_FEW_SHOTS_HR = [
         {'role': Approach.ASSISTANT, 'content': 'Dobar dan! Ja sam Finley. Kako se vi zovete?'},
-        {"role": Approach.USER ,'content': 'Zdravko'},
+        {"role": Approach.USER ,'content': '_ime koje je korisnik unio_'},
     ]
 
 
     QUERY_PROMPT_FEW_SHOTS = [
         {'role': Approach.ASSISTANT, 'content': 'Hello? I am Finley. What is your name?'},
-        {'role' : Approach.USER, 'content' : 'John' },
-        {'role' : Approach.ASSISTANT, 'content' : 'Nice to meet you John! What company do you work for?'},
+        {'role' : Approach.USER, 'content' : 'name_user_entered' },
+        {'role' : Approach.ASSISTANT, 'content' : 'Nice to meet you name_user_entered! What company do you work for?'},
         {'role' : Approach.USER, 'content' : 'Asee Solutions' },
     ]
 

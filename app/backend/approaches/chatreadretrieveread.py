@@ -84,6 +84,13 @@ class ChatReadRetrieveReadApproach(Approach):
     Surround each follow-up question with triple chevrons (<<<Are there exclusions for prescriptions?>>>). Try not to repeat questions that have already been asked.
     Only generate follow-up questions and do not generate any text before or after the follow-up questions, such as 'Next Questions'
     """
+    QUERY_PROMPT_TEMPLATE_HR = """Ispod se nalazi povijest dosadašnjeg razgovora i novo pitanje koje je korisnik postavio, a koje treba odgovoriti pretraživanjem izvorišnih dokumenata.  
+    Generiraj upit za pretragu na temelju razgovora i novog pitanja. Svaki pojam za pretragu tretiraj kao zasebnu ključnu riječ. Nemoj kombinirati pojmove unutar navodnika ili zagrada.  
+    Nemoj uključivati nazive citiranih izvora i dokumenata, npr. info.txt ili doc.pdf, u pojmove za pretragu.  
+    Nemoj uključivati bilo koji tekst unutar [] ili <<<>>> u pojmove za pretragu.  
+    Nemoj uključivati posebne znakove poput '+'.  
+    Ako ne možeš generirati upit za pretragu, vrati samo broj 0.  
+    """
 
     QUERY_PROMPT_TEMPLATE = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in source documents.
     Generate a search query based on the conversation and the new question. Treat each search term as an individual keyword. Do not combine terms in quotes or brackets.
@@ -198,8 +205,15 @@ class ChatReadRetrieveReadApproach(Approach):
         else:
             user_question = user_q
 
-        query_prompt=self.QUERY_PROMPT_TEMPLATE.format(query_term_language=language)
+        query_prompt = self.QUERY_PROMPT_TEMPLATE
+        if language == "hr":
+            query_prompt = self.QUERY_PROMPT_TEMPLATE_HR
 
+        query_prompt=query_prompt.format(query_term_language=language)
+        
+        prompt_few_shots = self.QUERY_PROMPT_FEW_SHOTS
+        if language == "hr":
+            prompt_few_shots = self.QUERY_PROMPT_FEW_SHOTS_HR
         # STEP 1: Generate an optimized keyword search query based on the chat history and the last question
         # if language == "hr":
         #     messages = self.get_messages_from_history(
@@ -216,7 +230,7 @@ class ChatReadRetrieveReadApproach(Approach):
         self.model_name,
         history,
         user_question,
-        self.QUERY_PROMPT_FEW_SHOTS,
+        prompt_few_shots,
         self.chatgpt_token_limit - len(user_question)
         )
 
@@ -380,31 +394,23 @@ class ChatReadRetrieveReadApproach(Approach):
         # Allow client to replace the entire prompt, or to inject into the existing prompt using >>>
         prompt_override = overrides.get("prompt_template")
 
+        system_message_conversation = self.SYSTEM_MESSAGE_CHAT_CONVERSATION
+        if language == "hr":
+            system_message_conversation = self.SYSTEM_MESSAGE_CHAT_CONVERSATION_HR
+
         if prompt_override is None:
-            if language == "hr" or language == "en":
-                system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION_HR.format(
-                    query_term_language=language,
-                    injected_prompt="",
-                    follow_up_questions_prompt=follow_up_questions_prompt,
-                    response_length_prompt=self.get_response_length_prompt_text(
-                        response_length
-                    ),
-                    userPersona=user_persona,
-                    systemPersona=system_persona,
-                )
-            else:
-                system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
-                    query_term_language=language,
-                    injected_prompt="",
-                    follow_up_questions_prompt=follow_up_questions_prompt,
-                    response_length_prompt=self.get_response_length_prompt_text(
-                        response_length
-                    ),
-                    userPersona=user_persona,
-                    systemPersona=system_persona,
-                )
+            system_message = system_message_conversation.format(
+                query_term_language=language,
+                injected_prompt="",
+                follow_up_questions_prompt=follow_up_questions_prompt,
+                response_length_prompt=self.get_response_length_prompt_text(
+                    response_length
+                ),
+                userPersona=user_persona,
+                systemPersona=system_persona,
+            )
         elif prompt_override.startswith(">>>"):
-            system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
+            system_message = system_message.format(
                 query_term_language=language,
                 injected_prompt=prompt_override[3:] + "\n ",
                 follow_up_questions_prompt=follow_up_questions_prompt,
@@ -415,7 +421,7 @@ class ChatReadRetrieveReadApproach(Approach):
                 systemPersona=system_persona,
             )
         else:
-            system_message = self.SYSTEM_MESSAGE_CHAT_CONVERSATION.format(
+            system_message = system_message.format(
                 query_term_language=language,
                 follow_up_questions_prompt=follow_up_questions_prompt,
                 response_length_prompt=self.get_response_length_prompt_text(
@@ -428,30 +434,21 @@ class ChatReadRetrieveReadApproach(Approach):
         try:
             # STEP 3: Generate a contextual and content-specific answer using the search results and chat history.
             #Added conditional block to use different system messages for different models.
+            prompt_few_shots = self.QUERY_PROMPT_FEW_SHOTS
+            if language == "hr":
+                prompt_few_shots = self.QUERY_PROMPT_FEW_SHOTS_HR
 
-            if language == "en":
-                messages = self.get_messages_from_history(
-                    system_message,
-                    # "Sources:\n" + content + "\n\n" + system_message,
-                    self.model_name,
-                    history,
-                    # history[-1]["user"],
-                    history[-1]["user"] + "Sources:\n" + content + "\n\n", # GPT 4 starts to degrade with long system messages. so moving sources here 
-                    self.RESPONSE_PROMPT_FEW_SHOTS_HR,
-                    max_tokens=self.chatgpt_token_limit
-                )
-            else:
-                messages = self.get_messages_from_history(
-                    system_message,
-                    # "Sources:\n" + content + "\n\n" + system_message,
-                    self.model_name,
-                    history,
-                    # history[-1]["user"],
-                    history[-1]["user"] + "Sources:\n" + content + "\n\n", # GPT 4 starts to degrade with long system messages. so moving sources here 
-                    self.RESPONSE_PROMPT_FEW_SHOTS,
-                    max_tokens=self.chatgpt_token_limit
+            messages = self.get_messages_from_history(
+                system_message,
+                # "Sources:\n" + content + "\n\n" + system_message,
+                self.model_name,
+                history,
+                # history[-1]["user"],
+                history[-1]["user"] + "Sources:\n" + content + "\n\n", # GPT 4 starts to degrade with long system messages. so moving sources here 
+                prompt_few_shots,
+                max_tokens=self.chatgpt_token_limit
             )
-
+           
             # Generate the chat completion
             chat_completion= await self.client.chat.completions.create(
                 model=self.chatgpt_deployment,

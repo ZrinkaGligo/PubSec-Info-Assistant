@@ -83,7 +83,7 @@
 
 .messageungroundedtext {
     padding-left: 36px;
-    font-size: 16px;
+    font-size: 24px;
     line-height: 22px;
     font-weight: 700;
     font-variation-settings: unset;
@@ -102,7 +102,7 @@
     max-height: calc(100vh - 313px); /* optional, adjust according to your layout */
     color: rgb(0, 0, 0);
 
-    font-size:20px;
+    font-size:24px;
     font-weight: 400;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -114,6 +114,7 @@
 
 .userMessage {
     color: white;
+    font-size: 22px;
 }
 
 .userMessageUngrounded {
