@@ -36,9 +36,9 @@ class IntroductionApproach(Approach):
     Trebaš saznati ime, tvrtku i poziciju u kojoj radi.
     Korisnik može unijeti ime napisano malim slovom.
     
-    Nakon toga pitaj korisnika da ti da svoju mail adresu kako bi mu mogao poslati zanimljive materijale o umjetnoj inteligenciji u financijskom sektoru.
+    Nakon toga pitaj korisnika da ti da svoju mail adresu kako bi mu mogao poslati zanimljive materijale o umjetnoj inteligenciji.
     
-    Nakon što ti korisnik kaže svoju mail adresu, reci mu da si ti AI asistent i da pomažeš u svim pitanjima oko dokumentacije u financijskim organizacijama.
+    Nakon što ti korisnik kaže svoju mail adresu, reci mu da si ti AI asistent i da pomažeš u svim pitanjima oko dokumentacije.
     Pokaži mu da si ispravno zapamtio njegove podatke. Taksativno navedi podatke koje je unio, npr: 
     ime - ime,
     pozicija - pozicija
@@ -59,9 +59,9 @@ class IntroductionApproach(Approach):
    
     You want to get to know the user. Introduce yourself to them in a friendly tone.
     You need to find out their name, company, and position.
-    Then ask the user to give you their email address so you can send them interesting materials about AI in finance.
+    Then ask the user to give you their email address so you can send them interesting materials about AI.
 
-    After the user provides their email address, inform them that you are an AI assistant and that you help with all questions related to documentation in financial organizations.
+    After the user provides their email address, inform them that you are an AI assistant and that you help with all questions related to documentation.
     Keep in mind that the name can also be written in lowercase.
 
     Show user that you have correctly remembered their information by listing the details they entered, for example:
@@ -80,7 +80,14 @@ class IntroductionApproach(Approach):
     Surround each follow-up question with triple chevrons (<<<Are there exclusions for prescriptions?>>>). Try not to repeat questions that have already been asked.
     Only generate follow-up questions and do not generate any text before or after the follow-up questions, such as 'Next Questions'
     """
-
+    QUERY_PROMPT_TEMPLATE_HR = """Generiraj novi dokument s istom strukturom i tonom kao primjeri pronađeni u izvornim dokumentima.
+    Ispod se nalazi povijest dosadašnjeg razgovora te novo pitanje koje je korisnik postavio, a na koje je potrebno odgovoriti pretraživanjem izvora ili kombiniranjem informacija iz razgovora.
+    Generiraj upit za pretraživanje na temelju razgovora i novog pitanja. Svaki pojam u upitu tretiraj kao zasebnu ključnu riječ. Nemoj kombinirati pojmove u navodnicima ili zagradama.
+    Nemoj uključivati nazive citiranih izvora i dokumenata, npr. info.txt ili doc.pdf, u pojmove pretraživanja.
+    Nemoj uključivati tekst unutar [] ili <<<>>> u pojmove pretraživanja.
+    Nemoj uključivati posebne znakove poput '+'.
+    Ako ne možeš generirati upit za pretraživanje, vrati samo broj 0.
+    """
     QUERY_PROMPT_TEMPLATE = """Generate a new document with the same structure and tone as the examples found in source documents.
     Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in source documents or cobbling together information from the conversation.
     Generate a search query based on the conversation and the new question. Treat each search term as an individual keyword. Do not combine terms in quotes or brackets.

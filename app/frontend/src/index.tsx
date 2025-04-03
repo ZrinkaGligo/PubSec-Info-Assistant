@@ -48,9 +48,9 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         {/* <Route index element={<Chat />} /> */}
-                        {/* <Route index element={<IntroductionEntry />} /> */}
                         <Route index element={<IntroductionGeneral />} />
                         <Route path="/IntroductionChat" element={<IntroductionChat />} />
+                        <Route path="/IntroductionEntry" element={<IntroductionEntry />} />
                         <Route path="/Chat" element={<Chat />} />
                         <Route path="content" element={<Content />} />
                         <Route path="*" element={<NoPage />} />

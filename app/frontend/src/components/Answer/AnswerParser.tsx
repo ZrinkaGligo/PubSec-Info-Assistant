@@ -220,7 +220,7 @@ export function parseAnswerToHtml(answer: string, approach: Approaches, work_cit
         console.log("GPTDirect or Introduction approach");
         console.log(parsedAnswer);
         console.log("PARSED");
-        const parsedRegex = parsedAnswer.replace(/\bisFinal:true\b/g, "").trim();
+        const parsedRegex = parsedAnswer.replace(/\bisFinal:true\b/gi, "").trim();
         console.log(parsedRegex);
         fragments.push(parsedRegex);
     }

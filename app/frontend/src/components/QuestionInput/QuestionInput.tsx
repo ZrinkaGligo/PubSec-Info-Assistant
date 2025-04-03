@@ -85,7 +85,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, onAd
                 : null}
                 <TextField
                     className={styles.questionInputTextArea}
-                    styles={{ field: { fontSize: "24px", fontWeight:"semi-bold" } }}
+                    styles={{ field: { fontSize: "24px", lineHeight: "1.2" } }}
                     placeholder={placeholder}
                     multiline
                     resizable={false}

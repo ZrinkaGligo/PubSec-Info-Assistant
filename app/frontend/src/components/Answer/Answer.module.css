@@ -113,9 +113,8 @@
 }
 
 .answerText {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 400;
-    line-height: 22px;
     padding-top: 16px;
     padding-bottom: 16px;
 }
@@ -124,10 +123,9 @@
     flex-direction: row;
 }
 .answerTextUngrounded {
-    font-size: 24px;
+    font-size: 22px;
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    line-height: 22px;
     padding-top: 10px;
     padding-bottom: 1px;
     padding-left: 1px;
@@ -140,7 +138,6 @@
 .citationLearnMore {
     margin-right: 5px;
     font-weight: 600;
-    line-height: 24px;
 }
 .downloadFileContainer{
     display: flex;
@@ -166,14 +163,14 @@
     border-radius: 4px;
     background: #00AEE8;
     color: #ffffff;
-    font-size: 19px;
+    font-size: 22px;
     cursor: pointer;
     padding-left: 14px;
     padding-right:14px;
     padding-bottom: 5px;
     padding-top: 5px;
     width: 300px;
-    height: 70px;
+    height: 50px;
     /* border: #0066CC solid 1px; */
 
 }
@@ -190,14 +187,14 @@
     border-radius: 4px;
     background: #00AEE8;
     color: #ffffff;
-    font-size: 18px;
+    font-size: 22px;
     cursor: pointer;
     padding-left: 14px;
     padding-right:14px;
     padding-bottom: 5px;
     padding-top: 5px;
     width: 350px;
-    height: 40px;
+    height: 50px;
 
 }
 .downloadFile:hover {

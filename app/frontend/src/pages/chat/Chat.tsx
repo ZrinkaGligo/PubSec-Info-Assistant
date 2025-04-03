@@ -133,6 +133,7 @@ const Chat = () => {
         try {
             const display_question_text = display_question || question;
             const work_directory_combine = topic_directory || work_directory;
+            console.log("work_directory_combine: ", work_directory_combine);
             
             const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
             const request: ChatRequest = {
@@ -642,6 +643,7 @@ const Chat = () => {
                                         approach={answer[1].approach}
                                     />
                                     <div className={styles.chatMessageGpt}>
+                                        conosle.log("makeApiRequest XXX: ");
                                         <Answer
                                             key={index}
                                             answer={answer[1]}

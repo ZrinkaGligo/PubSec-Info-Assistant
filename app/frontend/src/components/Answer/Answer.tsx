@@ -316,7 +316,7 @@ export const Answer = ({
     }
 
     const isFinal = (answerHtml: string) => {
-        const final = answerHtml.includes("isFinal:true");
+        const final = answerHtml.toLowerCase().includes("isfinal:true");
         return final;       
     }
     const { t } = useTranslation();
