@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import usFlag from "./flags/us.svg"; // Import the SVG files
 import hrFlag from "./flags/hr.svg";
 import styles from './LanguageSwitcher.module.css';
@@ -19,7 +19,14 @@ const languages: Language[] = [
 ];
 
 const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ onLanguageChange }) => {
+
+    useEffect(() => {
+        const storedLang = localStorage.getItem("lang") || "hr";
+        setLanguage(storedLang);
+    }, []);
+
     const [language, setLanguage] = useState<string>(()=>{
+        console.log("LanguageSwitcher language changed to:", localStorage.getItem("lang"));
         return localStorage.getItem("lang") || "hr"; // Default to "hr" if not set
     });
 
