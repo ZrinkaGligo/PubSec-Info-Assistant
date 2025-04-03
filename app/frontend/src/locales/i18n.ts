@@ -19,6 +19,7 @@ i18n
   .init({
     resources,
     supportedLngs: ['en', 'hr'], // Add supported languages
+    lng: "hr", // Default language
     fallbackLng: 'hr', // Default language
     debug: true, // Show debug logs
     interpolation: {

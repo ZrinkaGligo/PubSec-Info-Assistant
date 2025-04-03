@@ -12,6 +12,7 @@ import { Layout } from "./pages/layout/Layout";
 import NoPage from "./pages/NoPage";
 import Chat from "./pages/chat/Chat";
 import IntroductionEntry from "./pages/introduction/IntroductionEntry";
+import IntroductionGeneral from "./pages/introduction_general/introduction_general";
 import IntroductionChat from "./pages/introduction/IntroductionChat";
 import { HeaderProvider } from "./components/HeaderProvider";
 import Content from "./pages/content/Content";
@@ -30,9 +31,11 @@ export default function App() {
 
 
     const { i18n } = useTranslation();
-    const [language, setLanguage] = useState(localStorage.getItem("lang") || "en");
+    const [language, setLanguage] = useState("hr");
 
     useEffect(() => {
+        console.log(localStorage.getItem("lang"));
+        console.log("INDEX Language changed to:", language);
         i18n.changeLanguage(language);
         localStorage.setItem("lang", language);
       }, [language]);
@@ -45,7 +48,8 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Layout />}>
                         {/* <Route index element={<Chat />} /> */}
-                        <Route index element={<IntroductionEntry />} />
+                        {/* <Route index element={<IntroductionEntry />} /> */}
+                        <Route index element={<IntroductionGeneral />} />
                         <Route path="/IntroductionChat" element={<IntroductionChat />} />
                         <Route path="/Chat" element={<Chat />} />
                         <Route path="content" element={<Content />} />
