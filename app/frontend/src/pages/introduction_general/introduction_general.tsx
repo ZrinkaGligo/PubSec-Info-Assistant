@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import styles from './introduction_general.module.css';
 import { useTranslation } from "react-i18next";
-import aseeLogo from '../../assets/ASEE LOGO.png';
+import aseeLogo from '../../assets/ASEE logo bijeli.svg';
 import LanguageSwitcher from "../../components/LanguageSwitcher/LanguageSwitcher";
 import i18n from "../../locales/i18n";
 

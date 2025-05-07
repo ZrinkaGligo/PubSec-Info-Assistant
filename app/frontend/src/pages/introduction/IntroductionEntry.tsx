@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import IntrodctionImage from '../../assets/MeetFinley_v1.jpg';
+import IntrodctionImage from '../../assets/MeetFinley_v2.jpg';
 import styles from './IntroductionEntry.module.css';
 import i18n from "../../locales/i18n";
 

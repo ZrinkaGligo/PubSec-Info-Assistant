@@ -643,7 +643,6 @@ const Chat = () => {
                                         approach={answer[1].approach}
                                     />
                                     <div className={styles.chatMessageGpt}>
-                                        conosle.log("makeApiRequest XXX: ");
                                         <Answer
                                             key={index}
                                             answer={answer[1]}
