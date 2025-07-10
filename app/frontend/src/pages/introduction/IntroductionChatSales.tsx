@@ -56,8 +56,9 @@ const IntroductionChaSales = () => {
             setIsLoading(true);
             setActiveCitation(undefined);
             setActiveAnalysisPanelTab(undefined);
-    
+            console.log("makeApirequest: " + approach);
             try {
+                
                 const display_question_text = display_question || question;
                 const history: ChatTurn[] = answers.map(a => ({ user: a[0], bot: a[1].answer }));
                 const request: ChatRequest = {
@@ -144,16 +145,15 @@ const IntroductionChaSales = () => {
                 setTimeout(() => {
                     console.log("Izvršava se nakon 2 sekunde");
                     navigate("/ElevenLabsMain" , {state: {salesType: currentSalesType}});
-                }, 3000); // 2 sekunde
+                }, 5000); // 2 sekunde
             }
             else{
-            //    setActiveApproach(salesTypeApproach);
-                console.log(salesTypeApproach);
+               setDefaultApproach(salesTypeApproach);
+                // console.log(salesTypeApproach);
             }
         }
 
-        const currentApproach = getCurrentApproach(answers[answers.length - 1]?.[1].answer);
-        console.log("Trenutni approach je: " + currentApproach)
+        console.log("Trenutni approach je: " + activeApproach)
     }
 
     const updateAnswerAtIndex = (index: number, response: ChatResponse) => {
@@ -225,8 +225,8 @@ const IntroductionChaSales = () => {
         }
 
     return isKredit > isPaket
-        ? Approaches.GPTDirect
-        : Approaches.IntroductionSales;
+        ? Approaches.SalesKrediti
+        : Approaches.SalesPaketi;
     }
     
     function answerContains(answer: string, keyword: string): boolean {
@@ -254,7 +254,7 @@ const IntroductionChaSales = () => {
                 </div>
             )}
            
-           <div className={`${styles.chatInputWrapper} ${initQuestionVisible ? styles.chatInputMiddle : styles.chatInputDown}`}>
+           <div className={`${styles.chatInputWrapperSales} ${initQuestionVisible ? styles.chatInputMiddle : styles.chatInputDown}`}>
                 <QuestionInput
                     clearOnSend
                     placeholder={t('Question.Input.UpisitePitanjeSales')}
