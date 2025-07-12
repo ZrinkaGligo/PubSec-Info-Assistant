@@ -25,6 +25,10 @@ const ElevenLabsMain = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [agentSalesType, setAgentSalesType] = useState<salesType>('Kredit');
   const [agentId, setAgentId] = useState<string>('agent_01jyp4pajffdsr8h5nm4z5h7p5')
+  const [name, setName] = useState('');
+  const [sales_type, setSalesType] = useState<salesType>('Kredit');
+  const [account_bundle, setAccountBundle] = useState('');
+  const [additionalPrompt, setAdditionalPrompt] = useState('');
 
   const getAgentIdBySalesType = (salesType: salesType): string => {
     switch (salesType) {
@@ -36,27 +40,49 @@ const ElevenLabsMain = () => {
             return 'agent_01jyp4pajffdsr8h5nm4z5h7p5'; 
     }
   };
+  const getAdditionalPrompt = (salesType: salesType, name : string, account_bundle : string) => {
+  console.log("unutar getAdditionalPrompt su: " + name + " " + account_bundle);
+   if (salesType === 'Kredit') {
+       return `Ime korisnika je: ${name}`;
+   } else if (salesType === 'Paket') {
+       return `Ime korisnika je ${name}. Trenutno ima paket: ${account_bundle}`;
+   }
+   return '';
+  }
 
   useEffect(() => {
-        const { salesType } = location.state || {};
+        const { salesType, nameParam, accountBundle } = location.state || {};
         if (salesType === 'Kredit' || salesType === 'Paket') {
-            console.log(salesType)
+            
             setAgentSalesType(salesType);
             setAgentId(getAgentIdBySalesType(salesType))
+
+            setName(nameParam);
+            setAccountBundle(accountBundle);
         }
     }, [location.state]);
-    
+
+
 
   // Funkcija za pokretanje razgovora
   const startConversation = useCallback(async () => {
     try {
-      // Zahtjev za dozvolu mikrofona
+      
+      let tempPrompt = getAdditionalPrompt(sales_type, name, account_bundle);
       await navigator.mediaDevices.getUserMedia({ audio: true });
       
-      // Pokretanje razgovora
       const newConversation = await Conversation.startSession({
        
       agentId: agentId,
+      // overrides: {
+      //   agent: {
+      //     prompt: {
+      //       prompt: `${tempPrompt}. Prilagodi razgovor prema ovim informacijama.`
+      //     },
+      //     firstMessage: `test`,
+      //     language: "hr"
+      //   }
+      // },
       onConnect: () => {
           setConnectionStatus('Spojen');
           console.log(isConnected);
@@ -79,7 +105,7 @@ const ElevenLabsMain = () => {
     } catch (error) {
       console.error('Failed to start conversation:', error);
     }
-  }, []);
+  }, [sales_type, name, account_bundle]);
 
   // Funkcija za zaustavljanje razgovora
   const stopConversation = useCallback(async () => {

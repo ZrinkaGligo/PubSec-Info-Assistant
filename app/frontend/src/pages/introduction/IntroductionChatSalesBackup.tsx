@@ -9,12 +9,14 @@ import { Answer, AnswerError, AnswerLoading } from "../../components/Answer";
 import { UserChatMessage } from "../../components/UserChatMessage";
 import { IntroductionInitQuestionSales } from "../../components/Introduction/IntroductionInitQuestionSales";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from 'react-router-dom';
+
+// Ovo je backup stranica. Funkcionalnost je da se se prema odredenim odgovorima (isKredit i isPaket, redirecta na adekvatnog voice agenta)
+// i na pravi Approaches.
 
 const IntroductionChaSales = () => {
     
    
-    const [searchParams, setSearchParams] = useSearchParams();
+    
     const [defaultApproach, setDefaultApproach] = useState<number>(Approaches.IntroductionSales);
     const [activeApproach, setActiveApproach] = useState<number>(Approaches.IntroductionSales);
     const [salesTypeApproach, setSalesTypeApproach] = useState<number>(Approaches.IntroductionSales);
@@ -39,28 +41,6 @@ const IntroductionChaSales = () => {
     const [selectedAnswer, setSelectedAnswer] = useState<number>(0);
     type salesType = 'Kredit' | 'Paket';
     type communicationType = 'Chat' | 'Talk';
-
-    const [name, setName] = useState('');
-    const [sales_type, setSalesType] = useState('');
-    const [account_bundle, setAccountBundle] = useState('');
-    const [isFirstQuestion, setIsFirstQuestion] = useState(true);
-
-    useEffect(() => {
-        const nameParam = searchParams.get('name') || '';
-        const salesTypeParam = searchParams.get('sales_type') || '';
-        const accountBundleParam = searchParams.get('account_bundle') || '';
-
-        setName(nameParam);
-        setSalesType(salesTypeParam);
-        setAccountBundle(accountBundleParam);
- 
-        
-    }, [searchParams]); 
-    
-    useEffect(() => {
-         setDefaultApproach(salesTypeApproach);
-         setActiveApproach(salesTypeApproach);
-     }, [salesTypeApproach]);
 
     const makeApiRequest = async (question: string, approach: Approaches, 
                                     work_citation_lookup: { [key: string]: { citation: string; source_path: string; page_number: string } },
@@ -134,7 +114,6 @@ const IntroductionChaSales = () => {
                 setIsLoading(false);
             }
     };
-    
     const navigate = useNavigate();
     
     const [hasRun, setHasRun] = useState<boolean>(false);
@@ -146,51 +125,39 @@ const IntroductionChaSales = () => {
     }
 
     const salesDecision = (response: string) => {
-       
+        console.log("response: " + response);
+        let currentSalesType = 'Kredit';
+        if(answerContains(response, "isKredit")){
+            console.log("Answer conatins: isKredit");
+            setSalesTypeApproach(getCurrentApproach(response))
+            currentSalesType = getSalesType(response);
+        }
+        
         let commType = ""
         console.log("IsTalk: " + answerContains(response, "isTalk") + " salesTypeApproach:" + salesTypeApproach)
-        console.log("response: " + response);
-        if(answerContains(response, "isTalk")){
+        if(answerContains(response, "isTalk") && salesTypeApproach != Approaches.IntroductionSales){
             const communicationType = getCommunicationType(response);
             commType = communicationType;
 
             console.log("Communication type: " + communicationType);
-            
-            let currentApproach = getCurrentApproachFromParameter(sales_type);
-            console.log(`CurrentApproach from sales decision: ${currentApproach}`);
-            setSalesTypeApproach(currentApproach);
-            
+
             if(communicationType === 'Talk')
             {
-                console.log("REDIRECT TO ELEVEN LABS - salesTypeApproach, nameParam, accountBundle: " + salesTypeApproach + ", " + name + ", " + account_bundle);
+                console.log("REDIRECT TO ELEVEN LABS - " + currentSalesType);
                 setTimeout(() => {
-                    console.log("Izvršava se nakon 3.5 sekunde");
-                    navigate("/ElevenLabsMain" , {state: {salesType: salesTypeApproach, nameParam: name, accountBundle: account_bundle}});
-                }, 3500); 
+                    console.log("Izvršava se nakon 2 sekunde");
+                    navigate("/ElevenLabsMain" , {state: {salesType: currentSalesType}});
+                }, 5000); // 2 sekunde
             }
             else{
-                 console.log("Active approach je: " + activeApproach);
-                console.log("Default approach je: " + defaultApproach);
-                console.log("Sales Type approach je: " + salesTypeApproach);
+               setDefaultApproach(salesTypeApproach);
+                // console.log(salesTypeApproach);
             }
         }
-       
+
+        console.log("Trenutni approach je: " + activeApproach)
     }
-    const addUserNameToLastAnswer = (message: string) => {
-        setAnswers(currentAnswers => {
-            const updatedAnswers = [...currentAnswers];
-            const lastIndex = updatedAnswers.length - 1;
-            
-            if (lastIndex >= 0 && updatedAnswers[lastIndex][1]) {
-                const lastResponse = updatedAnswers[lastIndex][1];
-                updatedAnswers[lastIndex][1] = {
-                    ...lastResponse,
-                    answer: `${message}}`
-                };
-            }
-        return updatedAnswers;
-    });
-}
+
     const updateAnswerAtIndex = (index: number, response: ChatResponse) => {
         setAnswers(currentAnswers => {
             const updatedAnswers = [...currentAnswers];
@@ -244,24 +211,6 @@ const IntroductionChaSales = () => {
         ? 'Kredit'
         : 'Paket';
     }
-
-    function getCurrentApproachFromParameter(parameter: string | undefined): Approaches {
-        if (!parameter) return Approaches.SalesKrediti;
-
-        const lowerParam = parameter.toLowerCase();
-
-        if (lowerParam.includes("kredit")) {
-            return Approaches.SalesKrediti;
-        }
-
-        if (lowerParam.includes("paket")) {
-            return Approaches.SalesPaketi;
-        }
-
-        return Approaches.SalesKrediti;
-    }
-
-
     function getCurrentApproach(answer: string | undefined): Approaches {
         if (!answer) return Approaches.IntroductionSales;
 
@@ -290,25 +239,8 @@ const IntroductionChaSales = () => {
     }
    
     const onQuestionSend = (question: string) => {
-        
-        let displayQestion = question;
-        let sendingQuestion = question;
-        let additionalInformation = "";
-
-        console.log("onQuestionSend Active approach je: " + activeApproach);
-        console.log("onQuestionSend Default approach je: " + defaultApproach);
-        console.log("onQuestionSend Sales Type approach je: " + salesTypeApproach);
-    
-        if (isFirstQuestion) {
-            if(sales_type.toLowerCase() === 'paket')
-                additionalInformation =  `. Moje ime je ${name}. Želim razgovorati o paketima. Trenutno koristim ${account_bundle.toUpperCase()} paket.`;
-            else
-                additionalInformation = `. Moje ime je ${name}. Želim razgovarati o kreditima.`;
-            sendingQuestion = question + additionalInformation;
-            setIsFirstQuestion(false);
-        }
-        console.log(`Sending question: ${sendingQuestion}`);
-        makeApiRequest(sendingQuestion, defaultApproach, {}, {}, {}, displayQestion);
+      
+        makeApiRequest(question, defaultApproach, {}, {}, {});
         setInitQuestionVisible(false);
         console.log("After setting state:", initQuestionVisible);
     };
@@ -320,9 +252,7 @@ const IntroductionChaSales = () => {
         <div className={styles.container}>
              {initQuestionVisible && (
                 <div className={styles.initQuestionWrapper}>
-                    <IntroductionInitQuestionSales 
-                        name={name}
-                        salesType={sales_type} />
+                    <IntroductionInitQuestionSales />
                 </div>
             )}
            

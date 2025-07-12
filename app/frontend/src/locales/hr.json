@@ -182,9 +182,11 @@
     "IntroductionSales.Audio": "Razgovor s agentom",
     "IntroductionSales.Chat": "Chat s agentom", 
 
-    "finley-introduction-sales": "Pozdrav! Ja sam Finley, digitalni savjetnik iz e-poslovnice Zagrebačke banke.",
-    "finley-introduction-sales2" : "Rado ću vam pomoći pronaći najbolju ponudu iz naše široke palete proizvoda.",
-    "finley-introduction-sales3" : "Za početak, možete li mi reći svoje ime?",
+    "finley-introduction-sales": "Pozdrav ###! Ja sam Mia! Javljam se iz e-poslovnice Zagrebačke banke.",
+    "finley-introduction-sales2" : "Želim Vas informirati o mogućnostima financiranja koje Vam može pomoći u otplati vaših troškova ili financiranju vaših budućih planova.",
+    "finley-introduction-sales2b" : "Želim Vas informirati o našim paketima koji Vam nude bolju kontrolu nad financijama i dodatnu sigurnost, a sve to na jednostavan način.",
+    "finley-introduction-sales3" : "Mogu Vas preusmjeriti na razgovor s digitalnim agentom ili možete nastaviti dopisivanjem.",
+    "finley-introduction-sales4" : "Koju opciju preferirate?",
 
     "Question.Input.UpisitePitanjeSales": "",
 
