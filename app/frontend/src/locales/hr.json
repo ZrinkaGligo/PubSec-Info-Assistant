@@ -190,14 +190,14 @@
 
     "Question.Input.UpisitePitanjeSales": "",
 
-    "Answer.ChooseOptionSales" : "Odaberite koji način vam je draži, razgovor s agentom ili nastavak dopisivanja s agentom",
-    "Answer.TalkToAgent" : "Razgovor s agentom",
-    "Answer.ChatWithAgent": "Chat s agentom",
+    "Answer.ChooseOptionSales" : "Odaberite koji način vam je draži, poziv ili nastavak dopisivanja s virtualnim agentom",
+    "Answer.TalkToAgent" : "Poziv s virtualnim agentom",
+    "Answer.ChatWithAgent": "Dopisivanje s virtualnim agentom",
 
 
     "ElevenLabsMain.Start": "Pozovi",
     "ElevenLabsMain.Stop": "Prekini",
-    "ElevenLabsMain.Title": "Razgovaraj s agentom"
+    "ElevenLabsMain.Title": "Razgovaraj s virtualnim agentom"
 
 
     

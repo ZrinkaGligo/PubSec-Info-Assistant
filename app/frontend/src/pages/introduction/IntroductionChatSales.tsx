@@ -148,7 +148,7 @@ const IntroductionChaSales = () => {
     const salesDecision = (response: string) => {
        
         let commType = ""
-        console.log("IsTalk: " + answerContains(response, "isTalk") + " salesTypeApproach:" + salesTypeApproach)
+        console.log("IsTalk: " + answerContains(response, "isTalk") + " salesTypeApproach:" + salesTypeApproach + "sales type: " + sales_type);
         console.log("response: " + response);
         if(answerContains(response, "isTalk")){
             const communicationType = getCommunicationType(response);
@@ -160,12 +160,14 @@ const IntroductionChaSales = () => {
             console.log(`CurrentApproach from sales decision: ${currentApproach}`);
             setSalesTypeApproach(currentApproach);
             
+            let currentSalesType = getCurrentSalesType(sales_type);
+
             if(communicationType === 'Talk')
             {
-                console.log("REDIRECT TO ELEVEN LABS - salesTypeApproach, nameParam, accountBundle: " + salesTypeApproach + ", " + name + ", " + account_bundle);
+                console.log("REDIRECT TO ELEVEN LABS - currentSalesType, nameParam, accountBundle: " + currentSalesType + ", " + name + ", " + account_bundle);
                 setTimeout(() => {
                     console.log("Izvršava se nakon 3.5 sekunde");
-                    navigate("/ElevenLabsMain" , {state: {salesType: salesTypeApproach, nameParam: name, accountBundle: account_bundle}});
+                    navigate("/ElevenLabsMain" , {state: {salesType: currentSalesType, nameParam: name, accountBundle: account_bundle}});
                 }, 3500); 
             }
             else{
@@ -196,6 +198,7 @@ const IntroductionChaSales = () => {
             const updatedAnswers = [...currentAnswers];
             updatedAnswers[index] = [updatedAnswers[index][0], response];
             salesDecision(response.answer);
+            console.log("answee:" + response.answer);
             return updatedAnswers;
         });
     }
@@ -259,6 +262,22 @@ const IntroductionChaSales = () => {
         }
 
         return Approaches.SalesKrediti;
+    }
+
+     function getCurrentSalesType(parameter: string | undefined): salesType {
+        if (!parameter) return 'Kredit';
+
+        const lowerParam = parameter.toLowerCase();
+
+        if (lowerParam.includes("kredit")) {
+            return 'Kredit';
+        }
+
+        if (lowerParam.includes("paket")) {
+            return 'Paket';
+        }
+
+        return 'Kredit';
     }
 
 

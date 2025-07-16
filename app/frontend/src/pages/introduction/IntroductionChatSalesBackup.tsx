@@ -252,7 +252,7 @@ const IntroductionChaSales = () => {
         <div className={styles.container}>
              {initQuestionVisible && (
                 <div className={styles.initQuestionWrapper}>
-                    <IntroductionInitQuestionSales />
+                   
                 </div>
             )}
            

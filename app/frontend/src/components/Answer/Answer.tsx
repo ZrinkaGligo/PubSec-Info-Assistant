@@ -8,6 +8,7 @@ import { saveAs } from "file-saver";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+
 // Add this declaration to extend the Window interface
 declare global {
     interface Window {
@@ -30,6 +31,7 @@ import rehypeRaw from "rehype-raw";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHeader } from "../../components/HeaderProvider";
+import WaitingAnimation from "../WaitingAnimation/WaitingAnimation";
 
 interface Props {
     answer: ChatResponse;
@@ -336,6 +338,11 @@ export const Answer = ({
         const final = answerHtml.toLowerCase().includes("isfinal:true");
         return final;       
     }
+
+      const isTalk = (answerHtml: string) => {
+        const final = answerHtml.toLowerCase().includes("istalk");
+        return final;       
+    }
     const { t } = useTranslation();
 
     return (
@@ -430,8 +437,9 @@ export const Answer = ({
                 </div>
             )}
 
-             {(parsedAnswer.approach == Approaches.IntroductionSales && !!parsedAnswer.answerHtml.length && isFinal(answer.answer)) && (
+             {((parsedAnswer.approach == Approaches.SalesKrediti || parsedAnswer.approach == Approaches.SalesPaketi || parsedAnswer.approach == Approaches.IntroductionSales)&& !!parsedAnswer.answerHtml.length && isTalk(answer.answer)) && (
                 <div className={styles.downloadFileContainer}>
+                    {/* <WaitingAnimation/> */}
                 {/*     <Stack.Item>
                 //         <div className={styles.optionLabelStyle}>{t("Answer.ChooseOptionSales")}</div>
                 //         <Stack horizontal wrap tokens={{ childrenGap: 2 }} className={styles.downloadFileBtnContainer}>

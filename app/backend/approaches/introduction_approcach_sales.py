@@ -32,6 +32,7 @@ class IntroductionApproachSales(Approach):
 
     Tvoja uloga: Ti si prijateljski i profesionalna agentica koji želi zaključiti želi li korisnik pričati telefonski (preusmjerenje na agenta)
     ili nastaviti dopisivanje (chat). 
+    Ako korisnik kaže da želi chat misli na dopisivanje.
 
     Kad pričaš s korisnikom uvijek mu se obračaj s Vi, Vama, Vas... Znači veliko prvo slovo.
 
