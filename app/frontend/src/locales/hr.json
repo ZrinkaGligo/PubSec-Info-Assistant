@@ -185,7 +185,7 @@
     "finley-introduction-sales": "Pozdrav ###! Ja sam Mia! Javljam se iz e-poslovnice Zagrebačke banke.",
     "finley-introduction-sales2" : "Želim Vas informirati o mogućnostima financiranja koje Vam može pomoći u otplati vaših troškova ili financiranju vaših budućih planova.",
     "finley-introduction-sales2b" : "Želim Vas informirati o našim paketima koji Vam nude bolju kontrolu nad financijama i dodatnu sigurnost, a sve to na jednostavan način.",
-    "finley-introduction-sales3" : "Mogu Vas preusmjeriti na razgovor s digitalnim agentom ili možete nastaviti dopisivanjem.",
+    "finley-introduction-sales3" : "Mogu Vas preusmjeriti na poziv s virtualnim agentom ili možete nastaviti dopisivanjem.",
     "finley-introduction-sales4" : "Koju opciju preferirate?",
 
     "Question.Input.UpisitePitanjeSales": "",
@@ -197,7 +197,7 @@
 
     "ElevenLabsMain.Start": "Pozovi",
     "ElevenLabsMain.Stop": "Prekini",
-    "ElevenLabsMain.Title": "Razgovaraj s virtualnim agentom"
+    "ElevenLabsMain.Title": "Razgovar s virtualnim agentom"
 
 
     

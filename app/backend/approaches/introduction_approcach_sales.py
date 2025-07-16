@@ -44,7 +44,7 @@ class IntroductionApproachSales(Approach):
     Ako želi pričati: isTalk:9,isChat:1
 
     Ako korisnik odabere kredit i chat napiši ovo:
-    Nastavljamo dopisivanjem 😀! \n
+    U redu, nastavljamo dopisivanjem 😀! \n
     *Prednost m-cash kredita je brzina i jednostavnost.*
     \nIznos kredita do 20 tisuća eura na rok od 10 godine. 
     Kredit možete ugovoriti u nekoliko klikova putem mobilnog bankarstva (m-zabe) ili video poziva s našim e-bankarom, bez dolaska u poslovnicu.

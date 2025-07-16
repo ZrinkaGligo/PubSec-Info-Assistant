@@ -31,7 +31,6 @@ import rehypeRaw from "rehype-raw";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useHeader } from "../../components/HeaderProvider";
-import WaitingAnimation from "../WaitingAnimation/WaitingAnimation";
 
 interface Props {
     answer: ChatResponse;
