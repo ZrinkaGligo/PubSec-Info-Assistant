@@ -116,7 +116,8 @@ class SalesPaketi(Approach):
 
        Četvri korak:
        Pondi korisniku opcije ugovoranja. 
-       Prvo ga pitaj želi li odmah ugovorriti.
+       Prvo ga pitaj želi li odmah ugovoriti. ako nije sto posto siguran da želi odmah, pitaj ga
+       želi li video poziv.
 
         Ako kaže da želi ugovoriti sada u ovoj konverzaciji:
         U redu, za koji trenutak ćete primiti push poruku koja će Vas voditi u m-zabu na ekran za ugovaranje gotovinskog kredita. 

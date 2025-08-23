@@ -16,6 +16,7 @@ const CharacterStreamer = ({ eventSource, nonEventString, onStreamingComplete, c
   const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null);
   const [dots, setDots] = useState('');
 
+
     const handleStream = async () => {
       try {
         var response = {} as ChatResponse

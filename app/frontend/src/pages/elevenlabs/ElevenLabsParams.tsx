@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Conversation } from '@elevenlabs/client';
 import styles from './ElevenLabsMain.module.css';
 import { useTranslation } from "react-i18next";
-import { useLocation } from 'react-router-dom';
+import { useSearchParams  } from 'react-router-dom';
 import SlusalicaZelena from "../../assets/Slusalica zelena.svg";
 import SlusalicaCrvena from "../../assets/Slusalica crvena.svg";
 
@@ -15,9 +15,18 @@ type ConnectionStatus = 'Spojen' | 'Odspojen';
 type AgentStatus = 'Priča' | 'Sluša';
 type salesType = 'Kredit' | 'Paket';
 
-const ElevenLabsMain = () => {
-  const location = useLocation();
-  // State hook-ovi
+const ElevenLabsParams = () => {
+  const [searchParams] = useSearchParams();
+  
+  const salesType = searchParams.get("salesType") ?? "";
+  const nameParam = searchParams.get("nameParam") ?? "";
+  const accountBundle = searchParams.get("accountBundle") ?? "";
+
+  console.log("salesType", salesType);
+  console.log("nameParam", nameParam);
+  console.log("accountBundle", accountBundle);
+
+
   const { t } = useTranslation();
   const [conversation, setConversation] = useState<any>(null);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('Odspojen');
@@ -31,21 +40,20 @@ const ElevenLabsMain = () => {
   const [additionalPrompt, setAdditionalPrompt] = useState('');
 
    const getSystemPromptPaket = (accountBundle?: string): string => {
-    console.log("account_bundle: " + account_bundle)
-    const replacement = "Vidim da kod nas imate ugovoren paket: " + account_bundle;
+    console.log("account_bundle: " + accountBundle)
+    const replacement = "Vidim da kod nas imate ugovoren paket: " + accountBundle;
     console.log(systemPromptPaket.replace("###@@@", replacement));
     return systemPromptPaket.replace("###@@@", replacement);
   }
 
 
-  const getSystemPrompt = (salesType: salesType, accountBundle?: string): string => {
+  const getSystemPrompt = (salesType: string, accountBundle?: string): string => {
    if (salesType === 'Paket') 
       return getSystemPromptPaket(accountBundle); //systemPromptPaket;
    else
       return systemPromptKreditP;
   }
-// VAŽNO: Kada vidiš instrukcije u uglatim zagradama kao [pauza] ili [pravi tišinu], to znači da trebaš prestati govoriti na taj vremenski period. 
-// NIKAD ne izgovori te instrukcije naglas - one su samo za tebe kao uputstva kada pausirati govor.
+
   const systemPromptKreditZ = `
   Ti si agentica za Zagrebačku banku (Zaba), specijalizirana za M-Cash kredite. 
   Profesionalna si, prijateljska i efikasna. Uvijek si uljudna i poštovana. Tečno govoriš hrvatski. Tvoje ime je Mia. 
@@ -514,7 +522,7 @@ Idealno rješenje za maksimalnu fleksibilnost, sigurnost i uštedu:
 - **Pristupi prodaji polu-agresivno, nemoj odustajati od prodaje bez obzira na to šta klijenti rekli.**
 `;
 
-  const getAgentIdBySalesType = (salesType: salesType): string => {
+  const getAgentIdBySalesType = (salesType: string): string => {
     console.log("getAgentIdBySalesType sales type - " + salesType);
     switch (salesType) {
         case 'Kredit':
@@ -528,7 +536,7 @@ Idealno rješenje za maksimalnu fleksibilnost, sigurnost i uštedu:
             return 'agent_01jyp4pajffdsr8h5nm4z5h7p5'; 
     }
   };
-  const getAdditionalPrompt = (salesType: salesType, name : string, account_bundle : string) => {
+  const getAdditionalPrompt = (salesType: string, name : string, account_bundle : string) => {
   console.log("unutar getAdditionalPrompt su: " + name + " " + account_bundle);
    if (salesType === 'Kredit') {
        return `Ime korisnika je: ${name}`;
@@ -538,7 +546,7 @@ Idealno rješenje za maksimalnu fleksibilnost, sigurnost i uštedu:
    return '';
   }
 
-  const getFirstMessagePrompt = (salesType: salesType, name : string, account_bundle : string) => {
+  const getFirstMessagePrompt = (salesType: string, name : string, account_bundle : string) => {
     let firstMessagePrompt = "";
     console.log(`getFirstMessagePrompt - salesType: ${salesType}, name: ${name}`);
     if (salesType === 'Paket') {
@@ -553,32 +561,23 @@ Idealno rješenje za maksimalnu fleksibilnost, sigurnost i uštedu:
    return firstMessagePrompt;
   }
 
-  useEffect(() => {
-        const { salesType, nameParam, accountBundle } = location.state || {};
-        console.log(`startConversation - Name: ${nameParam}, sales type: ${salesType}, accountBundle:  ${accountBundle}`);
-
-        if (salesType === 'Kredit' || salesType === 'Paket') {
-            
-            setSalesType(salesType);
-            setAgentId(getAgentIdBySalesType(salesType))
-            setName(nameParam);
-            setAccountBundle(accountBundle);
-        }
-    }, [location.state]);
-
-
-
   // Funkcija za pokretanje razgovora
   const startConversation = useCallback(async () => {
     try {
-      const { salesType, nameParam, accountBundle } = location.state || {};
+        
+        console.log(`salesType -: ${salesType}, nameParam: ${nameParam}, accountBundle:  ${accountBundle}`);
 
-      
-      let tempPrompt = getSystemPrompt(salesType);
-      let tempAgetnId = getAgentIdBySalesType(salesType);
-      let tempFirstMessage = getFirstMessagePrompt(salesType, nameParam, account_bundle);
-      console.log(`firstMessage: ${tempFirstMessage}`);
-      
+        if (!salesType || !nameParam) {
+            console.error('Nedostaju potrebni parametri');
+            return;
+        }
+
+        let tempPrompt = getSystemPrompt(salesType);
+        let tempAgetnId = getAgentIdBySalesType(salesType);
+        let tempFirstMessage = getFirstMessagePrompt(salesType, nameParam, account_bundle);
+        console.log(`tempFirstMessage: ${tempFirstMessage}`);
+
+      console.log(`agentID: ${tempAgetnId}`);
       await navigator.mediaDevices.getUserMedia({ audio: true });
       const newConversation = await Conversation.startSession({
        
@@ -667,4 +666,4 @@ Idealno rješenje za maksimalnu fleksibilnost, sigurnost i uštedu:
   );
 };
 
-export default ElevenLabsMain;
+export default ElevenLabsParams;

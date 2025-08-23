@@ -45,6 +45,25 @@ const IntroductionChaSales = () => {
     const [account_bundle, setAccountBundle] = useState('');
     const [isFirstQuestion, setIsFirstQuestion] = useState(true);
 
+useEffect(() => {
+    if (chatMessageStreamEnd.current) {
+        chatMessageStreamEnd.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'end' 
+        });
+    }
+}, [answers]);
+
+    useEffect(() => {
+        // Scroll na dno kad god se promijeni broj poruka
+        if (chatMessageStreamEnd.current) {
+            chatMessageStreamEnd.current.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'end' 
+            });
+        }
+    }, [answers.length]);
+
     useEffect(() => {
         const nameParam = searchParams.get('name') || '';
         const salesTypeParam = searchParams.get('sales_type') || '';
