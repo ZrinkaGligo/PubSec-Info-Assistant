@@ -17,6 +17,12 @@ export const enum Approaches {
     CompareWebWithWork = 6,
     DocumentSummary = 7,
     DecisionProposal = 8,
+    Introduction = 9,
+    CreditApproval = 10,
+    OdlukeOdbora = 11,
+    IntroductionSales = 12,
+    SalesKrediti = 13,
+    SalesPaketi = 14
 }
 
 export type ChatRequestOverrides = {
@@ -37,6 +43,7 @@ export type ChatRequestOverrides = {
     responseTemp?: number;
     selectedFolders?: string;
     selectedTags?: string;
+    language?: string;
 };
 
 export type ChatResponse = {
@@ -222,4 +229,8 @@ export type GetFeatureFlagsResponse = {
 export type FetchCitationFileResponse = {
     file_blob: Blob;
     error?: string;
+}
+
+export type TranslationRequest = {
+    text: string
 }
